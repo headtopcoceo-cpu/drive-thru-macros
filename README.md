@@ -5,6 +5,7 @@ No-sauce macros, pre-tax prices, Ontario deals and meal ideas for McDonald's, We
 - `index.html`, `js/`, `data/`, `sw.js`, `manifest.webmanifest`, `icons/`: the app (served by GitHub Pages).
 - `data/menu.json`: 409 menu items with nutrition from each chain's own Canadian data and prices pulled October 23, 2026.
 - `data/deals.json`: current deals, refreshed weekly.
+- The Ideas tab opens with **Bob's Top 5s**: the best five orders at one restaurant and the best five across two, ranked by a Bob score on calories, protein, fat and carbs (no salads or grilled chicken).
 - `build/`: scripts and raw data used to build `data/menu.json` and the Claude-hosted copy of the page.
 
 Your meal log stays on your phone. Save a backup under More now and then.

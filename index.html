@@ -246,6 +246,27 @@ main.wrap { padding-block: 16px calc(110px + var(--navh)); }
 .meta { font-size: 12px; color: var(--ink-2); }
 .meta a { color: inherit; }
 .ideas-controls { display: grid; gap: 12px; margin-bottom: 16px; }
+.top5 { margin-bottom: 20px; display: grid; gap: 10px; }
+.top5 .sub { margin: 0; }
+.t5-h { font-family: var(--display); font-weight: 700; font-size: 17px; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 6px; }
+.t5-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.t5 { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: start; background: var(--bg); border-radius: var(--r); padding: 10px 12px; }
+.t5-rank { font-family: var(--display); font-weight: 800; font-size: 26px; line-height: 1; color: var(--ink-2); text-align: center; padding-top: 2px; }
+.t5:first-child .t5-rank { color: var(--accent); }
+.t5-items { font-weight: 600; font-size: 14px; line-height: 1.35; margin-top: 2px; }
+.t5-items .stop-label { margin-top: 0; }
+.t5-items + .t5-items { margin-top: 6px; }
+.t5-mac { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
+.t5-mac b { color: var(--ink); font-weight: 600; }
+.t5-why { font-family: var(--mono); font-size: 11px; color: var(--ink-2); margin-top: 4px; }
+.t5-side { display: grid; justify-items: end; gap: 8px; }
+.t5-score { font-family: var(--display); font-weight: 800; font-size: 22px; line-height: 1; text-align: right; }
+.t5-score small { display: block; font-family: var(--body); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.t5-take { font-size: 13px; color: var(--ink-2); margin: 2px 0 0; }
+.t5-take b { color: var(--ink); font-weight: 600; }
+.t5-how summary { font-size: 13px; font-weight: 600; cursor: pointer; }
+.t5-how ul { margin: 8px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); display: grid; gap: 4px; }
+.ideas-h { font-family: var(--display); font-weight: 700; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; margin: 0 0 10px; }
 .budget-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .budget-row input { width: 6.5rem; }
 .check { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
@@ -460,6 +481,18 @@ table.prices input.set { border-color: var(--m-pro); box-shadow: 0 0 0 1px var(-
   </section>
 
   <section class="view" id="view-ideas" hidden>
+    <section class="panel top5" id="top5" aria-labelledby="top5-h">
+      <h2 id="top5-h">Bob's Top 5s</h2>
+      <p class="sub" id="top5-sub"></p>
+      <label class="check"><input type="checkbox" id="top5-wraps" checked> Include lettuce-wrapped burgers</label>
+      <h3 class="t5-h">One restaurant</h3>
+      <ol class="t5-list" id="t5-one"></ol>
+      <h3 class="t5-h">Two restaurants</h3>
+      <ol class="t5-list" id="t5-two"></ol>
+      <p class="t5-take" id="t5-take"></p>
+      <details class="t5-how"><summary>How the Bob score works</summary><ul id="t5-how"></ul></details>
+    </section>
+    <h2 class="ideas-h">More meal ideas</h2>
     <div class="ideas-controls panel">
       <div>
         <div class="ctl-label">Calorie budget</div>
@@ -554,6 +587,7 @@ table.prices input.set { border-color: var(--m-pro); box-shadow: 0 0 0 1px var(-
         <li><b>No sauce.</b> McDonald's, Wendy's and Burger King publish ingredient-level numbers, so their no-sauce versions take the sauces off using the chain's own figures. A&amp;W doesn't, so its no-sauce numbers are estimates (marked). Harvey's burgers are listed as bun and patty with toppings your choice.</li>
         <li><b>Prices</b> are before tax. Wendy's, Harvey's and Burger King come from their online ordering at Niagara Falls stores. McDonald's and A&amp;W only show prices in their apps, so theirs are approximate, from third-party menu guides.</li>
         <li><b>Cheat-meal score</b> ranks your order's protein per 100 calories against every one-item order of a burger, chicken or fish main at these chains (no sauce, alone or with fries). Meals you logged keep the score they had when you logged them.</li>
+        <li><b>Bob score</b> (Bob's Top 5s) runs 0–100 and ignores price: 35% protein per 100 cal, 25% how much of a meal's protein you get (half your daily target), 20% fat per 100 cal, 10% carbs per 100 cal and 10% how well the calories fit one of two daily meals. Salads, grilled chicken, breakfast and desserts are left out, and everything is ordered without sauce.</li>
         <li><b>Combo score</b> (Ideas) runs 0–100: 40% leanness (protein per 100 cal, where 3 g scores 0 and the 10 g golden ratio scores 100), 40% value (protein per dollar, where 2 g scores 0 and 7 g scores 100) and 20% protein (how close the meal gets to a third of your daily protein target). A meal from two restaurants loses 6 points for the extra stop, so it only ranks higher when it's clearly better.</li>
         <li><b>Deals</b> are refreshed weekly from the chains' own Ontario ordering sites. App coupons are personal, so add yours under Deals.</li>
       </ul>

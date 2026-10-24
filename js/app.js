@@ -20,7 +20,7 @@
     tab: 'order', chain: 'All', cat: 'All', mode: 'ns', sort: 'p100', q: '', xAxis: 'cal', page: PAGE,
     cart: new Map(), sauce: {}, meals: [], span: 'week', anchor: new Date(), cal: 1900, pro: 160,
     prices: {}, customDeals: [], dealChain: 'All', dealPick: {}, confirmDel: null, pChain: "McDonald's", pq: '',
-    ideas: { budget: null, priority: 'balanced', chains: [], deals: true, breakfast: false, ns: true, fries: false, stops: 1 },
+    ideas: { budget: null, priority: 'balanced', chains: [], deals: true, breakfast: false, ns: true, fries: false, stops: 1, wraps: true },
     dfItems: [], menu: null, dealsFile: null, memoryOnly: false, saveTimer: null, priceTimer: null,
   };
 
@@ -369,7 +369,53 @@
 
   // ---------- ideas ----------
   function leftToday() { const lc = mealsOn(today()).reduce((a, m) => a + (m.totals?.cal || 0), 0); return Math.round((S.cal - lc) / 10) * 10; }
+  // ---------- Bob's Top 5s ----------
+  function renderTop5() {
+    const mealCal = Math.round(S.cal / 2), mealPro = Math.round(S.pro / 2), wraps = S.ideas.wraps !== false;
+    $('top5-wraps').checked = wraps;
+    const r = E.topFives({ mealCal, mealPro, wraps, mode: 'ns' });
+    S.lastTop5 = r;
+    const sub = $('top5-sub'); sub.replaceChildren();
+    sub.append('The best orders on calories, protein, fat and carbs together, sized for one of your two meals a day (about ', el('b', '', `${fmtC(mealCal)} cal and ${mealPro} g protein`), '). Ordered without sauce. No salads, grilled chicken, breakfast or desserts.');
+    const row = (x, i, list) => {
+      const li = el('li', 't5'); li.append(el('div', 't5-rank', String(i + 1)));
+      const body = el('div'); const who = el('div', 'who');
+      for (const c of x.chains) { const dot = el('i', 'dot'); dot.style.setProperty('--cc', cvar(c)); who.append(dot); }
+      who.append(x.chains.join(' + ')); body.append(who);
+      x.groups.forEach((g, gi) => { const it = el('div', 't5-items'); if (x.stops > 1) it.append(el('span', 'stop-label', `Stop ${gi + 1} · ${g.chain}`)); it.append(partsSummary(g.parts)); body.append(it); });
+      const known = x.parts.filter((p) => E.priceOf(p) != null); const price = known.reduce((s, p) => s + E.priceOf(p), 0); const missing = x.parts.length - known.length;
+      const mac = el('div', 't5-mac'); mac.append(el('b', '', `${fmtC(x.cal)} cal`), ` · ${fmtN(x.p)} g protein · ${fmtN(x.f)} g fat · ${fmtN(x.c)} g carbs · `, missing ? 'price not listed' : `${x.parts.some((p) => E.isApprox(p)) ? '≈' : ''}${fmt$(price)}`);
+      body.append(mac);
+      const b = x.bob; body.append(el('div', 't5-why', `P/cal ${b.lean} · P ${b.prot} · fat ${b.fat} · carbs ${b.carb} · size ${b.fit}`));
+      if (missing) { const un = [...new Set(x.parts.filter((p) => E.priceOf(p) == null).map((p) => p.name))]; body.append(el('div', 't5-why', `No price yet for ${un.join(', ')}. Add it under More → Prices.`)); }
+      li.append(body);
+      const side = el('div', 't5-side'); const sc = el('div', 't5-score', String(b.score)); sc.prepend(el('small', '', 'Bob score')); side.append(sc);
+      const add = el('button', 'add', 'Add'); add.type = 'button'; add.dataset.t5 = `${list}:${i}`; add.setAttribute('aria-label', `Add ${x.groups.map((g) => g.chain + ' ' + partsSummary(g.parts)).join(' and ')} to your order`); side.append(add);
+      li.append(side); return li;
+    };
+    for (const k of ['one', 'two']) { const ol = $('t5-' + k); ol.replaceChildren(); r[k].forEach((x, i) => ol.append(row(x, i, k))); if (!r[k].length) ol.append(el('li', 'empty-note', 'Nothing fits right now.')); }
+    const take = $('t5-take'); take.replaceChildren();
+    const o = r.one[0], t = r.two[0];
+    if (o && t) {
+      const d = t.bob.score - o.bob.score;
+      take.append(el('b', '', d > 0 ? `Two stops wins by ${d} point${d === 1 ? '' : 's'}. ` : d === 0 ? 'Two stops ties one stop. ' : `One stop wins by ${-d} point${d === -1 ? '' : 's'}. `),
+        d > 0 ? 'Splitting the order gets you macros no single counter can.' : 'A second stop doesn’t buy you better macros, so stick to one counter unless you’re passing both anyway.');
+    }
+    if ([...r.one, ...r.two].some((x) => x.parts.some((p) => p.ns && p.ns.basis === 'Estimate'))) take.append(' A&W’s no-sauce numbers are estimates.');
+    const how = $('t5-how'); how.replaceChildren();
+    const hi = Math.round(mealCal * 1.2), lo = Math.round(mealCal * 0.4), full = Math.round(mealCal * 0.65);
+    for (const line of [
+      ['Protein per calorie (35%)', ': 3 g of protein per 100 cal scores 0, 10 g scores 100.'],
+      ['Protein amount (25%)', `: share of ${mealPro} g, half your daily ${S.pro} g.`],
+      ['Fat (20%)', ': 6.5 g per 100 cal scores 0, 2 g scores 100.'],
+      ['Carbs (10%)', ': 13 g per 100 cal scores 0, 4 g scores 100. Weighted lighter than fat because your first meal comes right after training.'],
+      ['Size (10%)', `: full marks from ${fmtC(full)} to ${fmtC(mealCal)} cal, falling to 0 at ${fmtC(lo)} and ${fmtC(hi)} cal (nothing outside that range is ranked).`],
+      ['Variety', ': at most two orders per restaurant (one per pair of restaurants, and each restaurant in up to three pairs), with near-copies skipped. Price doesn’t count.'],
+    ]) { const li = el('li'); li.append(el('b', '', line[0]), line[1]); how.append(li); }
+  }
+
   function renderIdeas() {
+    renderTop5();
     const I = S.ideas; const left = leftToday();
     if (I.budget == null) I.budget = 1000;
     if (!I.stops) I.stops = 1;
@@ -702,6 +748,14 @@
   $('i-priority').addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b) return; S.ideas.priority = b.dataset.v; saveSettings(); renderIdeas(); });
   $('i-chain').addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (!b) return; const c = b.dataset.v; const I = S.ideas; if (c === 'All') I.chains = []; else I.chains = I.chains.includes(c) ? I.chains.filter((x) => x !== c) : [...I.chains, c]; saveSettings(); renderIdeas(); });
   for (const [id, k] of [['i-deals', 'deals'], ['i-breakfast', 'breakfast'], ['i-ns', 'ns'], ['i-fries', 'fries']]) $(id).addEventListener('change', (e) => { S.ideas[k] = e.target.checked; saveSettings(); renderIdeas(); });
+  $('top5-wraps').addEventListener('change', (e) => { S.ideas.wraps = e.target.checked; saveSettings(); renderTop5(); });
+  $('top5').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-t5]'); if (!b || !S.lastTop5) return;
+    const [list, i] = b.dataset.t5.split(':'); const x = S.lastTop5[list][+i]; if (!x) return;
+    for (const p of x.parts) { const k = E.itemKey(p.id, 'ns'); S.cart.set(k, (S.cart.get(k) || 0) + 1); }
+    saveCartSoon(); renderOrderBits(); flash(`Added ${x.groups.map((g) => g.chain + ' ' + partsSummary(g.parts)).join(' + ')}`);
+    b.textContent = 'Added ✓'; b.disabled = true; renderCartbar();
+  });
   $('idea-cards').addEventListener('click', (e) => {
     const b = e.target.closest('button[data-idea]'); if (!b || !S.lastIdeas) return; const x = S.lastIdeas.res[+b.dataset.idea]; const mode = S.lastIdeas.mode;
     for (const g of x.groups) {

@@ -1,5 +1,5 @@
 // Offline support: the app shell is cached on install; menu and deals data are network-first so weekly updates arrive.
-const VERSION = 'dtm-2026-10-24b';
+const VERSION = 'dtm-2026-10-24c';
 const SHELL = ['./', 'index.html', 'js/app.js', 'js/engine.js', 'js/store.js', 'js/pics.js', 'js/d3.min.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'data/menu.json', 'data/deals.json'];
 const DATA = 'dtm-data', FONTS = 'dtm-fonts';
