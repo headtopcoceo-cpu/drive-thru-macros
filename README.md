@@ -1,6 +1,6 @@
 # Drive-Thru Macros
 
-No-sauce macros, pre-tax prices, Ontario deals and meal ideas for McDonald's, Wendy's, Harvey's, A&W and Burger King in Canada. It's an installable web app: open the site in Safari on an iPhone, tap Share, then Add to Home Screen.
+No-sauce macros, pre-tax prices, Ontario deals and meal ideas for McDonald's, Wendy's, Harvey's, A&W and Burger King in Canada. It's an installable web app: open https://headtopcoceo-cpu.github.io/drive-thru-macros/ in Safari on an iPhone, tap Share, then Add to Home Screen.
 
 - `index.html`, `js/`, `data/`, `sw.js`, `manifest.webmanifest`, `icons/`: the app (served by GitHub Pages).
 - `data/menu.json`: 409 menu items with nutrition from each chain's own Canadian data and prices pulled October 23, 2026.
