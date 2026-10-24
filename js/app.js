@@ -191,6 +191,9 @@
     const inc = el('button', '', '+'); inc.type = 'button'; inc.dataset.act = 'inc'; inc.dataset.kind = kind; inc.dataset.key = key; inc.setAttribute('aria-label', `One more ${label}`);
     s.append(dec, el('span', '', unit ? `${value} ${unit}` : String(value)), inc); return s;
   }
+  // colour tags: 3 great (green), 2 good (yellow), 1 fair (orange), 0 poor (red)
+  function rtag(level, title, text) { const sp = el('span', 'rate r' + (level == null ? 'x' : level), text || (level == null ? '\u2014' : E.RATE_LABEL[level])); if (title) sp.title = title; return sp; }
+  const foodBob = (t) => (!t.unpriced.length && t.price > 0 && t.cal > 0 ? E.bobScore({ cal: t.cal, p: t.p, price: t.price }) : null);
   function partsSummary(parts) {
     const n = new Map(); for (const p of parts) n.set(p.name, (n.get(p.name) || 0) + 1);
     return [...n].map(([nm, q]) => (q > 1 ? `${q}× ${nm}` : nm)).join(' + ');
@@ -206,6 +209,8 @@
       const nm = el('div', 'nm'); const sub = el('span'); const d = el('i', 'dot'); d.style.setProperty('--cc', cvar(L.chain));
       if (L.kind === 'deal') { nm.append(el('b', '', `${L.deal.title}`)); sub.append(d, `${L.chain} deal · ${partsSummary(L.parts)}${L.noSauce ? ' · no sauce' : ''}`); }
       else { nm.append(el('b', '', L.name)); sub.append(d, L.chain + (L.noSauce ? ' · no sauce' : '')); }
+      const ir = E.itemRating(L.cal, L.p, L.price);
+      if (ir) sub.append(rtag(ir.level, ir.priced ? `This item on its own: ${fmt1((L.p * 100) / L.cal)} g protein per 100 cal, ${fmt$(L.price / Math.max(L.p, 0.1))} per g protein` : 'No price yet, so this rates protein per calorie only'));
       nm.append(sub);
       const amt = el('div', 'amt'); amt.append(el('b', '', fmtC(L.cal * q)), ' cal', el('br'), `${fmtN(L.p * q)} g P`, el('br'), L.price != null ? `${L.approx ? '≈' : ''}${fmt$(L.price * q)}` : 'no price');
       row.append(pic, nm, stepper('line', k, L.name, q), amt); lines.append(row);
@@ -219,35 +224,53 @@
     }
     const t = E.totals(S.cart, S.sauce); const has = t.cal > 0;
     $('tt-cal').textContent = fmtC(t.cal); $('tt-p').textContent = fmtN(t.p); $('tt-f').textContent = fmtN(t.f); $('tt-c').textContent = fmtN(t.c);
+    for (const [id, lv, tip] of [
+      ['tr-cal', has ? E.rate('cal', t.cal) : null, 'Great at 600 cal or less, good to 800, fair to 1,000'],
+      ['tr-p', has ? E.rate('protein', t.p) : null, 'Great at 45 g or more, good from 35 g, fair from 25 g'],
+      ['tr-f', has ? E.rate('fat100', (t.f * 100) / t.cal) : null, has ? `${fmt1((t.f * 100) / t.cal)} g fat per 100 cal. Great under 4 g, good to 4.7, fair to 5.5` : ''],
+      ['tr-c', has ? E.rate('carb100', (t.c * 100) / t.cal) : null, has ? `${fmt1((t.c * 100) / t.cal)} g carbs per 100 cal. Great under 8 g, good to 10, fair to 12` : ''],
+    ]) { const box = $(id); box.replaceChildren(); if (has) box.append(rtag(lv, tip)); }
     const e = 4 * t.p + 9 * t.f + 4 * t.c;
     const pp = has ? Math.round((400 * t.p) / e) : 0, fp = has ? Math.round((900 * t.f) / e) : 0, cp = has ? 100 - pp - fp : 0;
     const seg = $('split').children; seg[0].style.width = pp + '%'; seg[1].style.width = fp + '%'; seg[2].style.width = cp + '%';
     const sl = $('split-legend'); sl.replaceChildren();
     [['Protein', pp, '--m-pro'], ['Fat', fp, '--m-fat'], ['Carbs', cp, '--m-carb']].forEach(([n, v, c]) => { const s = el('span'); const i = el('i'); i.style.background = `var(${c})`; s.append(i, has ? `${v}% ${n.toLowerCase()}` : n); sl.append(s); });
     sl.append(el('span', '', 'of calories'));
+    if (has) sl.append(el('span', 'rate-note', 'Fat and carbs are rated per 100 cal, so a big order isn\u2019t marked down twice.'));
     renderMoney(t, has);
     const gradeEl = $('grade'); const st = $('scoretext'); const drag = $('drag');
     gradeEl.className = 'grade'; drag.replaceChildren(); st.replaceChildren();
     if (has) {
-      const sc = E.scoreOf(t.p100); const [, L, label] = E.gradeOf(sc);
-      gradeEl.textContent = L; gradeEl.classList.add('g' + L);
-      st.append(el('b', '', String(sc)), ' / 100 · ', el('span', 'lbl', label), el('br'), `${fmt1(t.p100)} g protein per 100 cal. Better than ${sc}% of ${fmtC(E.curve.length)} one-item fast-food orders.`);
-      if (S.cart.size > 1 || (S.cart.size === 1 && E.sauces.some((s) => S.sauce[s.key]))) {
+      const tf = E.totals(S.cart, {}); const bob = foodBob(tf); const lv = bob ? E.rate('bob', bob.score) : null;
+      gradeEl.textContent = bob ? String(bob.score) : '\u2013'; if (lv != null) gradeEl.classList.add('b' + lv);
+      const head = el('div', 'bobhead'); head.append(el('b', '', 'Bob score'), ' ', bob ? rtag(lv) : rtag(null, '', 'needs prices')); st.append(head);
+      if (bob) {
+        const parts = el('div', 'bobparts');
+        parts.append(rtag(E.rate('pd', 1 / bob.perG), 'Protein per dollar', `value ${bob.value}`), ' ', rtag(E.rate('p100', bob.p100), 'Protein per 100 cal', `protein/cal ${bob.lean}`), ' ', rtag(E.rate('cal', tf.cal), 'Calories in the order', `lightness ${bob.light}`));
+        st.append(parts);
+        if (E.sauces.some((x) => S.sauce[x.key])) st.append(el('div', 'leanline', 'Home sauces aren\u2019t counted in the Bob score, same as the Top 5s.'));
+      } else st.append(el('div', 'leanline', 'Add the missing price to score this order the same way as Bob\u2019s Top 5s.'));
+      const sc = E.scoreOf(t.p100); const [, L] = E.gradeOf(sc);
+      const ln = el('div', 'leanline'); ln.append('Leanness grade ', el('span', 'pill g' + L, `${L} \u00b7 ${sc}`), ` ${fmt1(t.p100)} g protein per 100 cal, leaner than ${sc}% of one-item fast-food orders.`); st.append(ln);
+      if (bob && S.cart.size > 1) {
         let best = null;
-        for (const [k] of S.cart) { const c2 = new Map(S.cart); c2.delete(k); const t2 = E.totals(c2, S.sauce); if (t2.cal <= 0) continue; const s2 = E.scoreOf(t2.p100); if (s2 > sc && (!best || s2 > best.s2)) best = { k, s2, cal: t.cal - t2.cal }; }
-        if (best) { const L2 = E.resolve(best.k); drag.append('Biggest drag: ', el('b', '', `${L2.chain} ${L2.name}`), `. Without it the score goes to ${best.s2} and the order drops ${fmtC(best.cal)} cal.`); }
+        for (const [k] of S.cart) { const c2 = new Map(S.cart); c2.delete(k); const t2 = E.totals(c2, {}); const b2 = foodBob(t2); if (!b2) continue; if (b2.score > bob.score && (!best || b2.score > best.s2)) best = { k, s2: b2.score, cal: tf.cal - t2.cal }; }
+        if (best) { const L2 = E.resolve(best.k); drag.append('Biggest drag: ', el('b', '', `${L2.chain} ${L2.name}`), `. Without it the Bob score goes to ${best.s2} and the order drops ${fmtC(best.cal)} cal.`); }
       }
-    } else { gradeEl.textContent = '–'; st.textContent = 'Add items to see the cheat-meal score.'; }
+    } else { gradeEl.textContent = '\u2013'; st.textContent = 'Add items to see the Bob score.'; }
     renderCurve(has ? t.p100 : null);
     renderDay(t, has);
     $('log-btn').disabled = !has; $('clear-btn').disabled = !has;
   }
   function renderMoney(t, has) {
     const box = $('money'); box.replaceChildren();
-    const row = (label, val, big) => { const r = el('div', 'mrow' + (big ? ' big' : '')); r.append(el('span', '', label), el('b', '', val)); return r; };
+    const row = (label, val, big, tag) => { const r = el('div', 'mrow' + (big ? ' big' : '')); const v = el('span', 'mv'); v.append(el('b', '', val)); if (tag) v.append(tag); r.append(el('span', 'ml', label), v); return r; };
     if (!has || (t.price <= 0 && !t.unpriced.length)) { box.append(row('Order total, before tax', '$0.00', true)); return; }
     box.append(row('Order total, before tax', t.price > 0 ? `${t.approx.size ? '≈ ' : ''}${fmt$(t.price)}` : '—', true));
-    if (t.price > 0) box.append(row('Protein per dollar', `${fmt1(t.pricedP / t.price)} g`), row('Calories per dollar', fmtC(t.pricedCal / t.price)), row('Cost per 10 g protein', t.pricedP > 0 ? fmt$((t.price / t.pricedP) * 10) : '—'));
+    if (t.price > 0) {
+      const pd = t.pricedP / t.price; const lv = E.rate('pd', pd); const tip = 'Great at 6 g or more per dollar, good from 5 g, fair from 4 g';
+      box.append(row('Protein per dollar', `${fmt1(pd)} g`, false, rtag(lv, tip)), row('Calories per dollar', fmtC(t.pricedCal / t.price), false, rtag(null, 'Neither good nor bad on its own, so no colour', 'info')), row('Cost per 10 g protein', t.pricedP > 0 ? fmt$((t.price / t.pricedP) * 10) : '—', false, t.pricedP > 0 ? rtag(lv, 'Great at $1.67 or less, good to $2.00, fair to $2.50') : null));
+    }
     const deals = t.lines.filter(([L]) => L.kind === 'deal' && L.regular != null && L.regular > L.price);
     if (deals.length) { const saved = deals.reduce((a, [L, q]) => a + (L.regular - L.price) * q, 0); box.append(el('p', 'mnote save', `Deals save you ${fmt$(saved)} against regular prices.`)); }
     if (t.approx.size) box.append(el('p', 'mnote', `${[...t.approx].join(' and ')} price${t.approx.size > 1 ? 's are' : ' is'} approximate (app-only chain).`));
@@ -267,7 +290,7 @@
     const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Where this order lands among fast-food orders'); box.append(svg.node());
     const inBin = (b) => v != null && v >= b.x0 && v < b.x1;
     svg.selectAll('rect').data(bins).join('rect').attr('x', (b) => x(b.x0) + 1).attr('width', (b) => Math.max(1, x(b.x1) - x(b.x0) - 2)).attr('y', (b) => y(b.length)).attr('height', (b) => y(0) - y(b.length)).attr('rx', 2).style('fill', (b) => (inBin(b) ? 'var(--accent)' : 'var(--line)'));
-    svg.selectAll('text.t').data(d3.range(0, maxV, 2)).join('text').attr('x', (d) => x(d)).attr('y', H - 4).attr('text-anchor', 'middle').style('fill', 'var(--ink-2)').style('font', '11px var(--mono)').text((d) => d);
+    svg.selectAll('text.t').data(d3.range(0, maxV - 2.5, 2)).join('text').attr('x', (d) => x(d)).attr('y', H - 4).attr('text-anchor', 'middle').style('fill', 'var(--ink-2)').style('font', '11px var(--mono)').text((d) => d);
     svg.append('text').attr('x', W - 4).attr('y', H - 4).attr('text-anchor', 'end').style('fill', 'var(--ink-2)').style('font', '11px var(--mono)').text('g P / 100 cal');
     if (v != null) { const cx = x(Math.min(v, maxV)); svg.append('line').attr('x1', cx).attr('x2', cx).attr('y1', 12).attr('y2', y(0)).style('stroke', 'var(--ink)').attr('stroke-width', 2).attr('stroke-linecap', 'round'); const lab = svg.append('text').attr('y', 9).style('fill', 'var(--ink)').style('font', '11px var(--mono)').text('this order'); const lw = lab.node().getComputedTextLength(); lab.attr('x', Math.min(Math.max(cx - lw / 2, 0), W - lw)); }
   }
@@ -297,7 +320,8 @@
     bar.hidden = !show; bar.classList.toggle('order-only', S.tab === 'order');
     if (!show) return;
     const s = $('cartbar-sum'); s.replaceChildren();
-    s.append(el('b', '', `${t.n} item${t.n === 1 ? '' : 's'}`), ` · ${fmtC(t.cal)} cal · ${fmtN(t.p)} g P${t.price > 0 ? ` · ${t.approx.size ? '≈' : ''}${fmt$(t.price)}` : ''} · score `, el('b', '', String(E.scoreOf(t.p100))));
+    const bob = foodBob(E.totals(S.cart, {}));
+    s.append(el('b', '', `${t.n} item${t.n === 1 ? '' : 's'}`), ` · ${fmtC(t.cal)} cal · ${fmtN(t.p)} g P${t.price > 0 ? ` · ${t.approx.size ? '≈' : ''}${fmt$(t.price)}` : ''} · Bob score `, el('b', '', bob ? String(bob.score) : '\u2013'));
   }
 
   // ---------- deals ----------
@@ -460,18 +484,18 @@
     const take = $('ideas-take'); take.replaceChildren();
     const cards = $('idea-cards'); cards.replaceChildren();
     if (!res.length) { take.textContent = `Nothing fits in ${fmtC(budget)} cal with these filters. Try a bigger budget or more restaurants.`; return; }
-    const lbl = { balanced: 'combo score', lean: 'most protein per calorie', value: 'most protein per dollar' }[I.priority];
+    const lbl = { balanced: 'Bob score', lean: 'most protein per calorie', value: 'most protein per dollar' }[I.priority];
     take.append(`The best ${res.length} meals that fit in `, el('b', '', `${fmtC(budget)} cal`), `, ranked by ${lbl}${I.fries ? ', each with fries' : ''}${I.ns ? ', ordered without sauce' : ''}. Prices are before tax.`);
     { const old = $('stops-insight'); if (old) old.remove(); }
     if (I.stops !== 1) {
       const one = E.ideas({ ...base, priority: 'balanced', stops: 1, limit: 1 })[0];
       const two = E.ideas({ ...base, priority: 'balanced', stops: 2, limit: 1 })[0];
       if (one && two) {
-        const p = el('p', 'info'); const d = two.combo.score - one.combo.score;
+        const p = el('p', 'info'); const d = two.bob.score - one.bob.score;
         p.append(el('b', '', d > 0 ? `Two stops wins by ${d} point${d === 1 ? '' : 's'}. ` : `One stop still wins${d < 0 ? ` by ${-d} point${d === -1 ? '' : 's'}` : ''}. `),
-          `Best single stop: ${one.chain} ${partsSummary(one.parts)} (${fmtC(one.cal)} cal, ${fmtN(one.p)} g protein, ${fmt$(one.price)}, score ${one.combo.score}). `,
-          `Best two stops: ${two.groups.map((g) => g.chain + ' ' + partsSummary(g.parts)).join(' + ')} (${fmtC(two.cal)} cal, ${fmtN(two.p)} g protein, ${fmt$(two.price)}, score ${two.combo.score}). `,
-          d > 0 ? 'The second stop earns its spot here.' : two.combo.lean > one.combo.lean + 10 ? 'Splitting gets you a leaner meal, but at a higher price per gram of protein.' : 'Splitting doesn’t get you anything you can’t get at one counter.');
+          `Best single stop: ${one.chain} ${partsSummary(one.parts)} (${fmtC(one.cal)} cal, ${fmtN(one.p)} g protein, ${fmt$(one.price)}, Bob score ${one.bob.score}). `,
+          `Best two stops: ${two.groups.map((g) => g.chain + ' ' + partsSummary(g.parts)).join(' + ')} (${fmtC(two.cal)} cal, ${fmtN(two.p)} g protein, ${fmt$(two.price)}, Bob score ${two.bob.score}). `,
+          d > 0 ? 'The second stop earns its spot here.' : two.bob.lean > one.bob.lean + 10 ? 'Splitting gets you a leaner meal, but at a higher price per gram of protein.' : 'Splitting doesn’t get you anything you can’t get at one counter.');
         take.after(p); p.id = 'stops-insight';
       }
     }
@@ -500,8 +524,8 @@
     const sc = E.scoreOf(x.p100); const g = E.gradeOf(sc);
     const kv = el('div', 'kv'); kv.append(el('b', '', `${fmtC(x.cal)} cal`), el('span', '', `${fmtN(x.p)} g protein`), el('span', '', `${fmtN(x.f)} F · ${fmtN(x.c)} C`), el('span', '', `${fmt1(x.p100)} P/100 cal`));
     if (x.pd) kv.append(el('span', '', `${fmt1(x.pd)} g P/$`));
-    kv.append(el('span', 'pill g' + g[1], `${g[1]} · ${sc}`)); card.append(kv);
-    const cs = el('p', 'meta'); cs.append(el('b', '', `Combo score ${x.combo.score}`), ` · leanness ${x.combo.lean} · value ${x.combo.value} · protein ${x.combo.prot}${x.stops > 1 ? ` · −${E.STOP_PENALTY} for the second stop` : ''}`); card.append(cs);
+    kv.append(rtag(E.rate('bob', x.bob.score), 'Bob score, same as your order and the Top 5s', `Bob ${x.bob.score}`)); card.append(kv);
+    const cs = el('p', 'meta'); cs.append(el('b', '', `Bob score ${x.bob.score}`), ` · value ${x.bob.value} · protein/cal ${x.bob.lean} · lightness ${x.bob.light}`); card.append(cs);
     for (const gr of x.groups) if (gr.deal && gr.deal.extras) card.append(el('p', 'meta', gr.deal.extras));
     if (mode === 'ns' && x.parts.some((p) => p.ns && p.ns.basis === 'Estimate')) card.append(el('p', 'meta', 'No-sauce numbers for A&W are estimates.'));
     const acts = el('div', 'acts'); const b = el('button', 'btn accent', 'Add to order'); b.type = 'button'; b.dataset.idea = i; acts.append(b); card.append(acts);
@@ -534,7 +558,7 @@
     const priced = meals.filter((m) => m.totals?.price > 0); const spent = priced.reduce((a, m) => a + m.totals.price, 0); const spentP = priced.reduce((a, m) => a + (m.totals.pricedP || 0), 0);
     tiles.append(
       tile('Meals logged', String(n), n === 1 ? 'meal' : 'meals', S.span === 'all' ? 'since you started' : 'in this period'),
-      tile('Avg cheat-meal score', avgScore != null ? String(avgScore) : '—', null, g ? g[2] : '', g ? el('span', 'pill g' + g[1], g[1]) : null),
+      tile('Avg leanness grade', avgScore != null ? String(avgScore) : '—', null, g ? g[2] : '', g ? el('span', 'pill g' + g[1], g[1]) : null),
       tile('Avg per meal', n ? fmtC(avgCal) : '—', n ? 'cal' : null, n ? `${fmtN(avgP)} g protein · ${fmtC(totCal)} cal total` : ''),
       tile('Spent', priced.length ? fmt$(spent) : '—', priced.length ? 'before tax' : null, priced.length ? `${fmt$(spent / priced.length)} per meal${spentP > 0 ? ` · ${fmt1(spentP / spent)} g P per $` : ''}` : (n ? 'Meals logged before prices were added have no total' : '')),
       tile('Best meal', best ? String(best.score) : '—', null, best ? `${best.name || 'Meal'} · ${niceDay(best.date)}` : ''),
@@ -561,10 +585,18 @@
     right.append(list); grid.append(left, right); body.append(grid);
     drawHistChart(chart, meals, start, end);
   }
+  function mealBob(m) { // Bob score of a logged meal's food (home sauces left out), when every item had a price
+    if (m.bob != null) return m.bob;
+    if (!(m.totals?.price > 0) || m.totals.unpriced) return null;
+    let cal = 0, p = 0; for (const it of (m.items || [])) { cal += (it.cal || 0) * (it.qty || 1); p += (it.p || 0) * (it.qty || 1); }
+    return cal > 0 ? E.bobScore({ cal, p, price: m.totals.price }).score : null;
+  }
   function receipt(m) {
     const r = el('article', 'receipt'); const head = el('header');
     const t = el('div', 't'); t.append(el('b', '', m.name || 'Meal'), el('span', '', niceDay(m.date, { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' })));
-    const g = E.gradeOf(m.score || 0); const sc = el('div'); sc.append(el('span', 'pill g' + g[1], `${g[1]} · ${m.score}`)); head.append(t, sc); r.append(head);
+    const g = E.gradeOf(m.score || 0); const sc = el('div', 'rc-scores'); const mb = mealBob(m);
+    if (mb != null) sc.append(rtag(E.rate('bob', mb), 'Bob score', `Bob ${mb}`), ' ');
+    sc.append(el('span', 'pill g' + g[1], `${g[1]} · ${m.score}`)); sc.lastChild.title = 'Leanness grade'; head.append(t, sc); r.append(head);
     const ul = el('ul');
     for (const it of (m.items || [])) { const li = el('li'); li.append(el('span', '', `${it.qty}× ${it.deal ? it.deal.title + ' (' + it.name + ')' : it.chain + ' ' + it.name}${(it.mode === 'ns' || it.mode === 'No sauce') && it.removed ? ' (no sauce)' : ''}`), el('span', '', `${fmtC(it.cal * it.qty)} cal${it.price != null ? ' · ' + fmt$(it.price * it.qty) : ''}`)); ul.append(li); }
     for (const s of (m.sauces || [])) { const li = el('li'); li.append(el('span', '', `${s.tbsp} tbsp ${s.name}`), el('span', '', `${fmtC(s.cal * s.tbsp)} cal`)); ul.append(li); }
@@ -580,7 +612,7 @@
   function drawHistChart(box, meals, start, end) {
     box.replaceChildren(); if (!meals.length) { box.append(el('p', 'empty-note', 'No meals in this period yet.')); return; }
     const W = Math.max(300, box.clientWidth || 600), H = 260;
-    const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Cheat-meal score of each logged meal'); box.append(svg.node());
+    const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Leanness grade of each logged meal'); box.append(svg.node());
     const left = 30, right = W - 14, top = 12, bottom = H - 28; const s = new Date(start), e = new Date(end); if (+s === +e) { s.setDate(s.getDate() - 3); e.setDate(e.getDate() + 3); }
     const x = d3.scaleTime([s, new Date(e.getFullYear(), e.getMonth(), e.getDate(), 23)], [left + 8, right - 8]); const y = d3.scaleLinear([0, 100], [bottom, top]);
     const g = svg.append('g').style('font', '12px var(--body)');
@@ -728,7 +760,8 @@
       : { key: L.key, name: L.name, chain: L.chain, cat: L.item.cat, mode: L.mode, removed: L.removed || '', qty: q, cal: L.cal, p: L.p, f: L.f, c: L.c, price: L.price, approx: L.approx });
     const sauces = E.sauces.filter((s) => S.sauce[s.key]).map((s) => ({ key: s.key, name: s.name, tbsp: S.sauce[s.key], cal: s.cal, p: s.p, f: s.f, c: s.c }));
     const totals = { cal: Math.round(t.cal), p: r1(t.p), f: r1(t.f), c: r1(t.c), unpriced: t.unpriced.length }; if (t.price > 0) { totals.price = Math.round(t.price * 100) / 100; totals.pricedP = r1(t.pricedP); }
-    const meal = { id: uid(), date, name, items, sauces, totals, p100: r1(t.p100), score, grade: E.gradeOf(score)[1], loggedAt: new Date().toISOString() };
+    const fb = foodBob(E.totals(S.cart, {}));
+    const meal = { id: uid(), date, name, items, sauces, totals, p100: r1(t.p100), score, grade: E.gradeOf(score)[1], ...(fb ? { bob: fb.score } : {}), loggedAt: new Date().toISOString() };
     const btn = $('log-btn'); btn.disabled = true; btn.textContent = 'Logging…';
     try {
       await Store.putMeal(meal); await reloadMeals();

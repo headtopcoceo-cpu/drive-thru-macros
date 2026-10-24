@@ -198,8 +198,8 @@ const Engine = (() => {
     if (stops === 2) for (let i = cands.length - 1; i >= 0; i--) if (cands[i].stops < 2) cands.splice(i, 1);
     if (!cands.length) return [];
     for (const x of cands) {
-      x.combo = comboOf(x);
-      x.rank = priority === 'lean' ? x.p100 + x.combo.score / 1000 : priority === 'value' ? (x.pd || 0) + x.combo.score / 1000 : x.combo.score + x.p / 1000;
+      x.combo = comboOf(x); x.bob = bobScore({ cal: x.cal, p: x.p, price: x.price });
+      x.rank = priority === 'lean' ? x.p100 + x.bob.score / 1000 : priority === 'value' ? (x.pd || 0) + x.bob.score / 1000 : x.bob.score + x.p / 1000;
     }
     cands.sort((a, b) => b.rank - a.rank);
     const out = [], perKey = {}, seenSig = new Set();
@@ -255,6 +255,25 @@ const Engine = (() => {
     const chainsIn = groups.map((g) => g.chain);
     return { chain: chainsIn.join(' + '), chains: chainsIn, stops: groups.length, groups, parts, ...t, price, approx, unpriced, p100: (t.p / t.cal) * 100, bob: bobScore({ ...t, price: price || 0 }) };
   }
+  // ---- colour bands for order numbers: 3 = great (green), 2 = good (yellow), 1 = fair (orange), 0 = poor (red)
+  const RATE = {
+    bob: { up: true, t: [65, 55, 40] }, // Bob score
+    cal: { up: false, t: [600, 800, 1000] }, // order calories
+    protein: { up: true, t: [45, 35, 25] }, // grams of protein in the order
+    p100: { up: true, t: [7, 6, 5] }, // protein per 100 cal
+    pd: { up: true, t: [6, 5, 4] }, // protein per dollar (cost per 10 g: $1.67 / $2.00 / $2.50)
+    fat100: { up: false, t: [4, 4.7, 5.5] }, // fat per 100 cal
+    carb100: { up: false, t: [8, 10, 12] }, // carbs per 100 cal
+  };
+  const RATE_LABEL = ['Poor', 'Fair', 'Good', 'Great'];
+  function rate(metric, v) {
+    const r = RATE[metric]; if (!r || v == null || !isFinite(v)) return null;
+    const ok = (lim) => (r.up ? v >= lim : v <= lim);
+    return ok(r.t[0]) ? 3 : ok(r.t[1]) ? 2 : ok(r.t[2]) ? 1 : 0;
+  }
+  // one item (or deal) on its own: half protein per dollar, half protein per 100 cal
+  function itemRating(cal, p, price) { if (!(cal > 0)) return null; const b = bobParts(cal, p, price || 0); const sc = price > 0 ? (b.value + b.lean) / 2 : b.lean; return { score: Math.round(sc * 100), level: rate('bob', Math.round(sc * 100)), priced: price > 0 }; }
+
   const topMemo = new Map();
   function topFives(opts) {
     const { mode = 'ns', n = 5 } = opts || {};
@@ -338,6 +357,6 @@ const Engine = (() => {
     CHAINS, CATS, MAIN_CATS, GRADES, load, setOverrides, setCustomDeals, allDeals,
     get items() { return items; }, get sauces() { return sauces; }, get curve() { return curve; },
     byId: (id) => byId.get(id), sauceByKey: (k) => sauceByKey.get(k), dealById: (id) => dealById.get(id),
-    STOP_PENALTY, macros, hasNs, priceOf, isMine, isApprox, isPlainFries, scoreOf, gradeOf, itemKey, dealKey, dealPicks, resolve, totals, ideas, topFives, bobScore, bobOrder, BOB_W, BOB_CAL, BOB_MIN_P, todayStr, r1,
+    STOP_PENALTY, macros, hasNs, priceOf, isMine, isApprox, isPlainFries, scoreOf, gradeOf, itemKey, dealKey, dealPicks, resolve, totals, ideas, topFives, bobScore, bobOrder, BOB_W, BOB_CAL, BOB_MIN_P, RATE, RATE_LABEL, rate, itemRating, todayStr, r1,
   };
 })();

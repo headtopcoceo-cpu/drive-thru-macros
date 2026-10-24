@@ -23,6 +23,7 @@
   --bg: #ECEEF2; --surface: #FFFFFF; --ink: #1A1D23; --ink-2: #5A6170; --line: #D7DBE2;
   --accent: #E8B520; --accent-ink: #1A1D23; --plate: #E4E7EC; --receipt: #FFFEF9;
   --good: #15723C; --warn: #855509; --bad: #C33232;
+  --r3: #15803D; --r2: #946200; --r1: #C2410C; --r0: #C02626;
   --c-mcd: #D63848; --c-wen: #2E6FCB; --c-har: #C2410C; --c-aw: #8A5C33; --c-bk: #1F8F5B;
   --m-pro: #2A62B8; --m-fat: #E8B520; --m-carb: #A3AAB6;
   --display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
@@ -35,6 +36,7 @@
     --bg: #13151A; --surface: #1C1F26; --ink: #ECEEF2; --ink-2: #9AA2B0; --line: #2D323C;
     --accent: #F2C53D; --accent-ink: #13151A; --plate: #262A33; --receipt: #1E2128;
     --good: #4CC07E; --warn: #E2A93E; --bad: #F06767;
+    --r3: #4ADE80; --r2: #FACC15; --r1: #FB923C; --r0: #F87171;
     --c-mcd: #F0606F; --c-wen: #5E9BF0; --c-har: #F07A3F; --c-aw: #C48D58; --c-bk: #45BF86;
     --m-pro: #6FA2F0; --m-fat: #F2C53D; --m-carb: #7C8595;
     color-scheme: dark;
@@ -44,6 +46,7 @@
     --bg: #13151A; --surface: #1C1F26; --ink: #ECEEF2; --ink-2: #9AA2B0; --line: #2D323C;
     --accent: #F2C53D; --accent-ink: #13151A; --plate: #262A33; --receipt: #1E2128;
     --good: #4CC07E; --warn: #E2A93E; --bad: #F06767;
+    --r3: #4ADE80; --r2: #FACC15; --r1: #FB923C; --r0: #F87171;
     --c-mcd: #F0606F; --c-wen: #5E9BF0; --c-har: #F07A3F; --c-aw: #C48D58; --c-bk: #45BF86;
     --m-pro: #6FA2F0; --m-fat: #F2C53D; --m-carb: #7C8595;
     color-scheme: dark;
@@ -175,7 +178,8 @@ main.wrap { padding-block: 16px calc(110px + var(--navh)); }
 .split-legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
 .money { display: flex; flex-direction: column; gap: 3px; }
 .money .mrow { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.money .mrow span { color: var(--ink-2); font-size: 12px; }
+.money .mrow .ml { color: var(--ink-2); font-size: 12px; }
+.money .mrow .mv { display: inline-flex; align-items: baseline; gap: 6px; }
 .money .mrow b { font-weight: 500; font-size: 14px; }
 .money .mrow.big b { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.05; }
 .mnote { font-family: var(--body); font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
@@ -188,6 +192,22 @@ main.wrap { padding-block: 16px calc(110px + var(--navh)); }
 .scoretext { font-family: var(--body); font-size: 13px; color: var(--ink-2); }
 .scoretext b { font-family: var(--display); font-size: 24px; color: var(--ink); font-weight: 700; }
 .scoretext .lbl { color: var(--ink); font-weight: 600; }
+.bobhead { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.bobhead b { font-family: var(--body); font-size: 14px; font-weight: 600; color: var(--ink); }
+.bobparts { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.leanline { margin-top: 6px; font-size: 12px; }
+.grade.b3 { background: color-mix(in srgb, var(--r3) 18%, transparent); color: var(--r3); }
+.grade.b2 { background: color-mix(in srgb, var(--r2) 20%, transparent); color: var(--r2); }
+.grade.b1 { background: color-mix(in srgb, var(--r1) 18%, transparent); color: var(--r1); }
+.grade.b0 { background: color-mix(in srgb, var(--r0) 16%, transparent); color: var(--r0); }
+.rate { display: inline-block; font-family: var(--body); font-size: 10.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.5; border-radius: 5px; padding: 0 6px; white-space: nowrap; background: var(--bg); color: var(--ink-2); }
+.rate.r3 { background: color-mix(in srgb, var(--r3) 16%, transparent); color: var(--r3); }
+.rate.r2 { background: color-mix(in srgb, var(--r2) 20%, transparent); color: var(--r2); }
+.rate.r1 { background: color-mix(in srgb, var(--r1) 16%, transparent); color: var(--r1); }
+.rate.r0 { background: color-mix(in srgb, var(--r0) 14%, transparent); color: var(--r0); }
+.totals .r { margin-top: 3px; min-height: 16px; }
+.split-legend .rate-note { flex-basis: 100%; font-size: 11px; }
+.rc-scores { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 .curve svg { display: block; width: 100%; height: auto; margin-top: 8px; }
 .drag { font-family: var(--body); font-size: 12px; color: var(--ink-2); margin-top: 6px; }
 .drag b { color: var(--ink); font-weight: 600; }
@@ -424,17 +444,17 @@ table.prices input.set { border-color: var(--m-pro); box-shadow: 0 0 0 1px var(-
         <div class="sauces" id="sauces"></div>
         <hr class="rule">
         <div class="totals">
-          <div><div class="k">Cal</div><div class="v" id="tt-cal">0</div></div>
-          <div><div class="k">Protein</div><div class="v" id="tt-p">0</div></div>
-          <div><div class="k">Fat</div><div class="v" id="tt-f">0</div></div>
-          <div><div class="k">Carbs</div><div class="v" id="tt-c">0</div></div>
+          <div><div class="k">Cal</div><div class="v" id="tt-cal">0</div><div class="r" id="tr-cal"></div></div>
+          <div><div class="k">Protein</div><div class="v" id="tt-p">0</div><div class="r" id="tr-p"></div></div>
+          <div><div class="k">Fat</div><div class="v" id="tt-f">0</div><div class="r" id="tr-f"></div></div>
+          <div><div class="k">Carbs</div><div class="v" id="tt-c">0</div><div class="r" id="tr-c"></div></div>
         </div>
         <div class="split" id="split"><i style="background:var(--m-pro)"></i><i style="background:var(--m-fat)"></i><i style="background:var(--m-carb)"></i></div>
         <div class="split-legend" id="split-legend"></div>
         <hr class="rule">
         <div class="money" id="money"></div>
         <hr class="rule">
-        <div class="scorebox"><div class="grade" id="grade">–</div><div class="scoretext" id="scoretext">Add items to see the cheat-meal score.</div></div>
+        <div class="scorebox"><div class="grade" id="grade">–</div><div class="scoretext" id="scoretext">Add items to see the Bob score.</div></div>
         <div class="curve" id="curve"></div>
         <div class="drag" id="drag"></div>
         <hr class="rule">
@@ -511,7 +531,7 @@ table.prices input.set { border-color: var(--m-pro); box-shadow: 0 0 0 1px var(-
         <button type="button" class="chip" data-v="any" aria-pressed="false">Either</button>
       </div></div>
       <div class="ctl"><span class="ctl-label">Rank by</span><div class="chips" id="i-priority" role="group" aria-label="Rank by">
-        <button type="button" class="chip" data-v="balanced" aria-pressed="true">Combo score</button>
+        <button type="button" class="chip" data-v="balanced" aria-pressed="true">Bob score</button>
         <button type="button" class="chip" data-v="lean">Leanest</button>
         <button type="button" class="chip" data-v="value">Best value</button>
       </div></div>
@@ -593,9 +613,9 @@ table.prices input.set { border-color: var(--m-pro); box-shadow: 0 0 0 1px var(-
         <li><b>Nutrition</b> comes from each chain's own Canadian data, pulled October 23, 2026: McDonald's nutrition calculator, Wendy's and Burger King ordering data, Harvey's nutrition page and A&amp;W's menu data.</li>
         <li><b>No sauce.</b> McDonald's, Wendy's and Burger King publish ingredient-level numbers, so their no-sauce versions take the sauces off using the chain's own figures. A&amp;W doesn't, so its no-sauce numbers are estimates (marked). Harvey's burgers are listed as bun and patty with toppings your choice.</li>
         <li><b>Prices</b> are before tax. Wendy's, Harvey's and Burger King come from their online ordering at Niagara Falls stores. McDonald's and A&amp;W only show prices in their apps, so theirs are approximate, from third-party menu guides.</li>
-        <li><b>Cheat-meal score</b> ranks your order's protein per 100 calories against every one-item order of a burger, chicken or fish main at these chains (no sauce, alone or with fries). Meals you logged keep the score they had when you logged them.</li>
-        <li><b>Bob score</b> (Bob's Top 5s and Big Back Bob) runs 0–100, worked out on the whole order: 40% value (price per gram of protein, where 50¢ scores 0 and 14¢ scores 100), 35% protein per 100 cal (3 g scores 0, 10 g scores 100) and 25% lightness (600 cal or less scores 100, 1,000 cal scores 0). Top 5s use burgers, chicken sandwiches (not grilled), strips and nuggets, ordered without sauce: two or more items from one place, or a chicken item plus a burger from two places, 450–1,000 cal with 30 g protein or more.</li>
-        <li><b>Combo score</b> (Ideas) runs 0–100: 40% leanness (protein per 100 cal, where 3 g scores 0 and the 10 g golden ratio scores 100), 40% value (protein per dollar, where 2 g scores 0 and 7 g scores 100) and 20% protein (how close the meal gets to a third of your daily protein target). A meal from two restaurants loses 6 points for the extra stop, so it only ranks higher when it's clearly better.</li>
+        <li><b>Leanness grade</b> (A–E, with a 0–100 number) ranks your order's protein per 100 calories against every one-item order of a burger, chicken or fish main at these chains (no sauce, alone or with fries). Meals you logged keep the score they had when you logged them.</li>
+        <li><b>Bob score</b> (your order, meal ideas, Bob's Top 5s and Big Back Bob) runs 0–100, worked out on the whole order: 40% value (price per gram of protein, where 50¢ scores 0 and 14¢ scores 100), 35% protein per 100 cal (3 g scores 0, 10 g scores 100) and 25% lightness (600 cal or less scores 100, 1,000 cal scores 0). Top 5s use burgers, chicken sandwiches (not grilled), strips and nuggets, ordered without sauce: two or more items from one place, or a chicken item plus a burger from two places, 450–1,000 cal with 30 g protein or more.</li>
+        <li><b>Colours</b> on your order: green is great, yellow good, orange fair, red poor. Calories: 600 or less, 800, 1,000. Protein: 45 g, 35 g, 25 g. Protein per dollar: 6 g, 5 g, 4 g (cost per 10 g of $1.67, $2.00, $2.50). Fat per 100 cal: 4 g, 4.7 g, 5.5 g. Carbs per 100 cal: 8 g, 10 g, 12 g. Bob score: 65, 55, 40. Each item also gets a tag for its own protein per dollar and per calorie, so you can see which one drags the order down.</li>
         <li><b>Deals</b> are refreshed weekly from the chains' own Ontario ordering sites. App coupons are personal, so add yours under Deals.</li>
       </ul>
     </div>
