@@ -103,7 +103,7 @@
     const rows = visibleItems();
     const box = $('items'); box.replaceChildren();
     const take = $('takeaway'); take.replaceChildren();
-    const mains = rows.filter((r) => E.MAIN_CATS.has(r.cat) || r.cat === 'Salads');
+    const mains = rows.filter((r) => E.MAIN_CATS.has(r.cat));
     if (mains.length) {
       const best = mains.slice().sort((a, b) => p100(view(b)) - p100(view(a)))[0];
       take.append(S.mode === 'ns' ? 'Ordered without sauce, the ' : 'As served, the ', el('b', '', `${best.chain} ${best.name}`), ` gives the most protein for the calories here: ${fmt1(p100(view(best)))} g per 100 cal.`);
@@ -141,7 +141,7 @@
     const lg = $('legend'); lg.replaceChildren();
     const byPrice = S.xAxis === 'price'; sync('f-x', S.xAxis);
     $('cmp-title').textContent = byPrice ? 'Price vs protein' : 'Calories vs protein';
-    const all = visibleItems().filter((r) => E.MAIN_CATS.has(r.cat) || r.cat === 'Salads' || r.cat === 'Breakfast');
+    const all = visibleItems().filter((r) => E.MAIN_CATS.has(r.cat) || r.cat === 'Breakfast');
     const rows = byPrice ? all.filter((r) => E.priceOf(r) != null) : all;
     const skipped = all.length - rows.length;
     $('cmp-sub').textContent = (byPrice ? 'Higher and further left gives more protein for less money. Prices are before tax.' : 'Higher and further left gives more protein for fewer calories.') + ' Hover or tap a dot for details; click it, or tap it twice, to add it.' + (byPrice && skipped ? ` ${skipped} item${skipped > 1 ? 's' : ''} with no price ${skipped > 1 ? 'are' : 'is'} left off.` : '');
@@ -224,11 +224,12 @@
     }
     const t = E.totals(S.cart, S.sauce); const has = t.cal > 0;
     $('tt-cal').textContent = fmtC(t.cal); $('tt-p').textContent = fmtN(t.p); $('tt-f').textContent = fmtN(t.f); $('tt-c').textContent = fmtN(t.c);
+    const ref = E.reference('ns');
     for (const [id, lv, tip] of [
-      ['tr-cal', has ? E.rate('cal', t.cal) : null, 'Great at 600 cal or less, good to 800, fair to 1,000'],
+      ['tr-cal', has ? E.rate('cal', t.cal) : null, has ? `${Math.round((t.cal / E.GENERIC_DAY) * 100)}% of a generic 2,000-cal day. Great up to about 680 cal, good to 920, fair to 1,080` : ''],
       ['tr-p', has ? E.rate('protein', t.p) : null, 'Great at 45 g or more, good from 35 g, fair from 25 g'],
-      ['tr-f', has ? E.rate('fat100', (t.f * 100) / t.cal) : null, has ? `${fmt1((t.f * 100) / t.cal)} g fat per 100 cal. Great under 4 g, good to 4.7, fair to 5.5` : ''],
-      ['tr-c', has ? E.rate('carb100', (t.c * 100) / t.cal) : null, has ? `${fmt1((t.c * 100) / t.cal)} g carbs per 100 cal. Great under 8 g, good to 10, fair to 12` : ''],
+      ['tr-f', has ? E.rate('f100', (t.f * 100) / t.cal) : null, has ? `${fmt1((t.f * 100) / t.cal)} g fat per 100 cal. A typical fast-food order has ${fmt1(ref.f100.mid)} g; the leanest on these menus ${fmt1(ref.f100.hi)} g` : ''],
+      ['tr-c', has ? E.rate('c100', (t.c * 100) / t.cal) : null, has ? `${fmt1((t.c * 100) / t.cal)} g carbs per 100 cal. A typical fast-food order has ${fmt1(ref.c100.mid)} g; the lowest on these menus ${fmt1(ref.c100.hi)} g` : ''],
     ]) { const box = $(id); box.replaceChildren(); if (has) box.append(rtag(lv, tip)); }
     const e = 4 * t.p + 9 * t.f + 4 * t.c;
     const pp = has ? Math.round((400 * t.p) / e) : 0, fp = has ? Math.round((900 * t.f) / e) : 0, cp = has ? 100 - pp - fp : 0;
@@ -246,7 +247,7 @@
       const head = el('div', 'bobhead'); head.append(el('b', '', 'Bob score'), ' ', bob ? rtag(lv) : rtag(null, '', 'needs prices')); st.append(head);
       if (bob) {
         const parts = el('div', 'bobparts');
-        parts.append(rtag(E.rate('pd', 1 / bob.perG), 'Protein per dollar', `value ${bob.value}`), ' ', rtag(E.rate('p100', bob.p100), 'Protein per 100 cal', `protein/cal ${bob.lean}`), ' ', rtag(E.rate('cal', tf.cal), 'Calories in the order', `lightness ${bob.light}`));
+        parts.append(rtag(E.band(bob.value), `Protein per dollar against fast food: ${fmt1(1 / bob.perG)} g, where a typical order gets ${fmt1(E.reference('ns').pd.mid)} g`, `value ${bob.value}`), ' ', rtag(E.band(bob.lean), `Protein per 100 cal against fast food: ${fmt1(bob.p100)} g, where a typical order has ${fmt1(E.reference('ns').p100.mid)} g`, `macros ${bob.lean}`), ' ', rtag(E.band(bob.light), `${Math.round((tf.cal / E.GENERIC_DAY) * 100)}% of a generic 2,000-cal day`, `calories ${bob.light}`));
         st.append(parts);
         if (E.sauces.some((x) => S.sauce[x.key])) st.append(el('div', 'leanline', 'Home sauces aren\u2019t counted in the Bob score, same as the Top 5s.'));
       } else st.append(el('div', 'leanline', 'Add the missing price to score this order the same way as Bob\u2019s Top 5s.'));
@@ -268,8 +269,8 @@
     if (!has || (t.price <= 0 && !t.unpriced.length)) { box.append(row('Order total, before tax', '$0.00', true)); return; }
     box.append(row('Order total, before tax', t.price > 0 ? `${t.approx.size ? '≈ ' : ''}${fmt$(t.price)}` : '—', true));
     if (t.price > 0) {
-      const pd = t.pricedP / t.price; const lv = E.rate('pd', pd); const tip = 'Great at 6 g or more per dollar, good from 5 g, fair from 4 g';
-      box.append(row('Protein per dollar', `${fmt1(pd)} g`, false, rtag(lv, tip)), row('Calories per dollar', fmtC(t.pricedCal / t.price), false, rtag(null, 'Neither good nor bad on its own, so no colour', 'info')), row('Cost per 10 g protein', t.pricedP > 0 ? fmt$((t.price / t.pricedP) * 10) : '—', false, t.pricedP > 0 ? rtag(lv, 'Great at $1.67 or less, good to $2.00, fair to $2.50') : null));
+      const pd = t.pricedP / t.price; const lv = E.rate('pd', pd); const rf = E.reference('ns').pd; const tip = `A typical fast-food order gets ${fmt1(rf.mid)} g protein per dollar; the best on these menus ${fmt1(rf.hi)} g`;
+      box.append(row('Protein per dollar', `${fmt1(pd)} g`, false, rtag(lv, tip)), row('Calories per dollar', fmtC(t.pricedCal / t.price), false, rtag(null, 'Neither good nor bad on its own, so no colour', 'info')), row('Cost per 10 g protein', t.pricedP > 0 ? fmt$((t.price / t.pricedP) * 10) : '—', false, t.pricedP > 0 ? rtag(lv, tip) : null));
     }
     const deals = t.lines.filter(([L]) => L.kind === 'deal' && L.regular != null && L.regular > L.price);
     if (deals.length) { const saved = deals.reduce((a, [L, q]) => a + (L.regular - L.price) * q, 0); box.append(el('p', 'mnote save', `Deals save you ${fmt$(saved)} against regular prices.`)); }
@@ -414,10 +415,10 @@
     });
     const mac = el('div', 't5-mac'); mac.append(el('b', '', `${fmtC(x.cal)} cal`), ` · ${fmtN(x.p)} g protein · ${fmtN(x.f)} g fat · ${fmtN(x.c)} g carbs`); body.append(mac);
     const key = el('div', 't5-key'); const g = perG(x);
-    key.append(el('b', '', x.price == null ? 'price not listed' : `${x.approx ? '≈' : ''}${fmt$(x.price)}`), ' · ', el('b', '', g == null ? '— per g protein' : `${cents(g)} per g protein`), ' · ', el('b', '', `${fmt1(x.p100)} g protein per 100 cal`));
+    key.append(el('b', '', x.price == null ? 'price not listed' : `${x.approx ? '≈' : ''}${fmt$(x.price)}`), ' · ', el('b', '', g == null ? '— protein per $' : `${fmt1(x.p / x.price)} g protein per $`), g == null ? '' : ` (${cents(g)} a gram)`, ' · ', el('b', '', `${fmt1(x.p100)} g protein per 100 cal`));
     body.append(key);
     const b = x.bob;
-    if (x.price != null) body.append(el('div', 't5-why', `value ${b.value} · protein/cal ${b.lean} · lightness ${b.light}`));
+    if (x.price != null) body.append(el('div', 't5-why', `value ${b.value} · macros ${b.lean} · calories ${b.light}`));
     else { const un = [...new Set(x.unpriced.map((p) => p.name))]; body.append(el('div', 't5-why', `No price yet for ${un.join(', ')}. Add what you pay under More → Prices to score this order.`)); }
     li.append(body);
     const side = el('div', 't5-side'); const sc = el('div', 't5-score', x.price == null ? '–' : String(b.score)); sc.prepend(el('small', '', 'Bob score')); side.append(sc);
@@ -429,7 +430,7 @@
     const bbb = BIG_BACK_BOB.map((o) => E.bobOrder(o, 'ns'));
     S.lastTop5 = { one: r.one, two: r.two, bbb };
     const sub = $('top5-sub'); sub.replaceChildren();
-    sub.append('Fast-food meals that hit the craving without blowing the day: ', el('b', '', 'two or more items from one restaurant'), ', or ', el('b', '', 'a chicken item from one place and a burger from another'), `. Ranked on value (price per gram of protein) and health (protein per 100 cal, and lighter orders score higher). Orders run ${fmtC(r.cal.min)} to ${fmtC(r.cal.max)} cal with at least ${r.minP} g protein, ordered without sauce, with current deals counted. No triple-patty burgers, grilled chicken, lettuce wraps, veggie burgers, chili, sides or salads.`);
+    sub.append('The best cheat meals for your money, scored against fast food itself: ', el('b', '', '50 is a typical fast-food order, 100 the best on these menus'), `. Protein per dollar counts most. Two or more items from one restaurant, or a chicken item from one place and a burger from another, ${fmtC(r.cal.min)}\u2013${fmtC(r.cal.max)} cal with at least ${r.minP} g protein, ordered without sauce, with current deals counted. No triple-patty burgers, grilled chicken, lettuce wraps, veggie burgers, chili or sides.`);
     for (const k of ['one', 'two']) { const ol = $('t5-' + k); ol.replaceChildren(); r[k].forEach((x, i) => ol.append(bobRow(x, i, k))); if (!r[k].length) ol.append(el('li', 'empty-note', 'Nothing fits right now.')); }
     const take = $('t5-take'); take.replaceChildren();
     const o = r.one[0], t = r.two[0];
@@ -439,14 +440,14 @@
         d > 0 ? 'Splitting the order gets you a better deal on protein than any single counter.' : 'A second stop doesn’t get you cheaper or leaner protein, so stick to one counter unless you’re passing both anyway.');
     }
     if ([...r.one, ...r.two].some((x) => x.parts.some((p) => p.ns && p.ns.basis === 'Estimate'))) take.append(' A&W’s no-sauce numbers are estimates.');
-    const how = $('t5-how'); how.replaceChildren();
+    const how = $('t5-how'); how.replaceChildren(); const rf0 = E.reference('ns');
     for (const line of [
-      ['Value (40%)', ': price per gram of protein for the whole order. 50\u00a2 a gram scores 0, 14\u00a2 a gram scores 100.'],
-      ['Protein per 100 cal (35%)', ': total protein over total calories. 3 g scores 0, 10 g scores 100.'],
-      ['Lightness (25%)', `: ${fmtC(r.cal.full)} cal or less scores 100, sliding to 0 at ${fmtC(r.cal.max)} cal.`],
+      ['Value (50%)', `: protein per dollar for the whole order, against ${fmtC(rf0.n)} fast-food cheat meals on these menus (one or two mains, with or without a side). The worst 1% score 0, a typical order (${fmt1(rf0.pd.mid)} g per $) scores 50, and the best on these menus (${fmt1(rf0.pd.hi)} g per $) scores 100.`],
+      ['Macros (30%)', `: protein per 100 cal on the same scale. Typical is ${fmt1(rf0.p100.mid)} g, the best real cheat meal ${fmt1(rf0.p100.hi)} g, so nobody\u2019s held to the 10 g golden ratio.`],
+      ['Calories (20%)', `: against a generic 2,000-cal day, not your targets. 600 cal (30% of the day) or less scores 100, 1,000 (half) scores 50, 1,400 (70%) scores 0. A typical fast-food order here is ${fmtC(rf0.medianCal)} cal.`],
       ['One restaurant', ': two or three items, at least two of them different, with a burger or chicken sandwich in the mix.'],
       ['Two restaurants', ': one chicken item (a sandwich, strips or nuggets with at least 15 g protein) from one place and one beef burger from another.'],
-      ['What counts', `: burgers, chicken sandwiches (not grilled), strips and nuggets; ${fmtC(r.cal.min)}\u2013${fmtC(r.cal.max)} cal and ${r.minP} g protein or more. Triple-patty burgers are out, and items without a listed price, like McNuggets, can\u2019t be ranked until you add a price.`],
+      ['What counts', `: burgers, chicken sandwiches (not grilled), strips and nuggets; ${fmtC(r.cal.min)}\u2013${fmtC(r.cal.max)} cal (up to 55% of a 2,000-cal day) and ${r.minP} g protein or more. Triple-patty burgers are out, and items without a listed price, like McNuggets, can\u2019t be ranked until you add a price.`],
       ['Variety', ': at most two orders per restaurant (one per pair of restaurants), with near-copies skipped. Ties go to the lighter order.'],
     ]) { const li = el('li'); li.append(el('b', '', line[0]), line[1]); how.append(li); }
     // Big Back Bob
@@ -457,7 +458,8 @@
       const gs = priced.map(perG), ps = bbb.map((x) => x.p100);
       const rng = (a, f) => { const lo2 = Math.min(...a), hi2 = Math.max(...a); return lo2 === hi2 ? f(lo2) : `${f(lo2)}–${f(hi2)}`; };
       const cs = bbb.map((x) => x.cal);
-      bt.append(`These run ${rng(cs, fmtC)} cal at ${rng(gs, cents)} per gram of protein and ${rng(ps, fmt1)} g protein per 100 cal, against `, el('b', '', `${fmtC(o.cal)} cal at ${cents(perG(o))} and ${fmt1(o.p100)}`), ` for the top pick (${o.chain} ${partsSummary(o.parts)}).`);
+      const pds = priced.map((x) => x.p / x.price);
+      bt.append(`These run ${rng(cs, fmtC)} cal with ${rng(pds, fmt1)} g protein per $ and ${rng(ps, fmt1)} g protein per 100 cal, against `, el('b', '', `${fmtC(o.cal)} cal, ${fmt1(o.p / o.price)} g per $ and ${fmt1(o.p100)}`), ` for the top pick (${o.chain} ${partsSummary(o.parts)}). A typical fast-food order scores about ${E.bobScore({ cal: E.reference('ns').medianCal, p: (E.reference('ns').p100.mid * E.reference('ns').medianCal) / 100, price: (E.reference('ns').p100.mid * E.reference('ns').medianCal) / 100 / E.reference('ns').pd.mid }).score}.`);
     }
   }
 
@@ -525,7 +527,7 @@
     const kv = el('div', 'kv'); kv.append(el('b', '', `${fmtC(x.cal)} cal`), el('span', '', `${fmtN(x.p)} g protein`), el('span', '', `${fmtN(x.f)} F · ${fmtN(x.c)} C`), el('span', '', `${fmt1(x.p100)} P/100 cal`));
     if (x.pd) kv.append(el('span', '', `${fmt1(x.pd)} g P/$`));
     kv.append(rtag(E.rate('bob', x.bob.score), 'Bob score, same as your order and the Top 5s', `Bob ${x.bob.score}`)); card.append(kv);
-    const cs = el('p', 'meta'); cs.append(el('b', '', `Bob score ${x.bob.score}`), ` · value ${x.bob.value} · protein/cal ${x.bob.lean} · lightness ${x.bob.light}`); card.append(cs);
+    const cs = el('p', 'meta'); cs.append(el('b', '', `Bob score ${x.bob.score}`), ` · value ${x.bob.value} · macros ${x.bob.lean} · calories ${x.bob.light}`); card.append(cs);
     for (const gr of x.groups) if (gr.deal && gr.deal.extras) card.append(el('p', 'meta', gr.deal.extras));
     if (mode === 'ns' && x.parts.some((p) => p.ns && p.ns.basis === 'Estimate')) card.append(el('p', 'meta', 'No-sauce numbers for A&W are estimates.'));
     const acts = el('div', 'acts'); const b = el('button', 'btn accent', 'Add to order'); b.type = 'button'; b.dataset.idea = i; acts.append(b); card.append(acts);

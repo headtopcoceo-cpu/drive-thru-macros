@@ -1,7 +1,7 @@
 // Menu math: item lookup, prices, order totals, the cheat-meal score and meal ideas.
 const Engine = (() => {
   const CHAINS = ["McDonald's", "Wendy's", "Harvey's", 'A&W', 'Burger King'];
-  const CATS = ['Burgers', 'Chicken', 'Breakfast', 'Sides', 'Salads', 'Desserts', 'More'];
+  const CATS = ['Burgers', 'Chicken', 'Breakfast', 'Sides', 'Desserts', 'More'];
   const MAIN_CATS = new Set(['Burgers', 'Chicken', 'More']);
   const GRADES = [[85, 'A', 'Top of the fast-food pack'], [70, 'B', 'Solid for fast food'], [50, 'C', 'About average for fast food'], [30, 'D', 'Heavy on the bun and fries'], [0, 'E', 'Mostly carbs and fat']];
   const PLAIN_FRIES = /^(kids|small|medium|large|regular|mini) fries$/i;
@@ -37,7 +37,8 @@ const Engine = (() => {
     }
     curve = out.sort((a, b) => a - b);
   }
-  function setOverrides(o) { overrides = o || {}; }
+  let overridesKey = '{}';
+  function setOverrides(o) { overrides = o || {}; overridesKey = JSON.stringify(overrides); }
   function setCustomDeals(list) { customDeals = list || []; rebuildDeals(); }
   function rebuildDeals() { dealById = new Map([...deals, ...customDeals].map((d) => [d.id, d])); }
   const allDeals = () => [...deals, ...customDeals];
@@ -91,7 +92,7 @@ const Engine = (() => {
     for (const it of items) {
       if (!okChain(it.chain) || priceOf(it) == null) continue;
       if (/lettuce-wrapped/i.test(it.name)) continue; // nobody actually orders these
-      const isMain = MAIN_CATS.has(it.cat) || it.cat === 'Salads' || (includeBreakfast && it.cat === 'Breakfast' && it.p >= 10);
+      const isMain = MAIN_CATS.has(it.cat) || (includeBreakfast && it.cat === 'Breakfast' && it.p >= 10);
       if (isMain) { if (!mainsBy.has(it.chain)) mainsBy.set(it.chain, []); mainsBy.get(it.chain).push(it); }
       if (isPlainFries(it)) { if (!friesBy.has(it.chain)) friesBy.set(it.chain, []); friesBy.get(it.chain).push(it); }
     }
@@ -130,10 +131,8 @@ const Engine = (() => {
       friesUnitsBy.set(chain, (friesBy.get(chain) || []).map((fr) => grp(chain, [fr])));
       singlesBy.set(chain, mainsAll.filter((m) => macros(m, mode).cal <= budget).map((m) => grp(chain, [m])));
       if (!fryOpts.length) continue;
-      const salads = mainsAll.filter((m) => m.cat === 'Salads');
-      const sorted = mainsAll.filter((m) => m.cat !== 'Salads').sort((a, b) => macros(a, mode).cal - macros(b, mode).cal);
+      const sorted = mainsAll.slice().sort((a, b) => macros(a, mode).cal - macros(b, mode).cal);
       const withFry = (parts) => { for (const fr of fryOpts) push([grp(chain, fr ? [...parts, fr] : parts)]); };
-      for (const sl of salads) withFry([sl]); // a salad is a meal on its own
       for (let i = 0; i < sorted.length; i++) {
         const a = sorted[i]; const ca = macros(a, mode).cal; if (ca > budget) break;
         withFry([a]);
@@ -187,7 +186,6 @@ const Engine = (() => {
         for (const [X, Y] of [[A, B], [B, A]]) {
           const sx = singleTop.get(X) || [];
           for (let i = 0; i < sx.length; i++) for (let j = i; j < sx.length; j++) {
-            if (sx[i].parts[0].cat === 'Salads' || sx[j].parts[0].cat === 'Salads') continue; // a salad stays a meal on its own
             const pair = grp(X, [...sx[i].parts, ...sx[j].parts]);
             if (pair.cal > budget) continue;
             for (const v of unitsBy.get(Y)) if (fit(pair, v)) push(X === A ? [pair, v] : [v, pair]);
@@ -219,19 +217,59 @@ const Engine = (() => {
   // dollar), protein per 100 cal and keeping calories low. One restaurant: two or more different items. Two
   // restaurants: a chicken item from one and a beef burger from the other. Only burgers, chicken sandwiches (no
   // grilled), strips and nuggets; no triple-patty burgers, lettuce wraps, veggie patties, wraps, fish, sides or salads.
-  const BOB_W = { value: 0.40, lean: 0.35, light: 0.25 };
-  const BOB_CAL = { min: 450, full: 600, max: 1000 }; // ranked orders run 450-1,000 cal; 600 or less gets full calorie marks
+  // The Bob score is relative to fast food, not to ideal macros. A reference set of every realistic one-restaurant
+  // cheat meal on these menus (one or two mains, with or without a side, no sauce, 300-1,600 cal; grilled chicken and
+  // lettuce wraps left out) sets the scale: 0 = the worst 1% of those orders, 50 = a typical one (the median),
+  // 100 = the best on these menus. Calories are judged against a generic 2,000-cal day, not personal targets.
+  const BOB_W = { value: 0.5, lean: 0.3, light: 0.2 }; // protein per dollar, protein per 100 cal, calories
+  const GENERIC_DAY = 2000;
+  const BOB_CAL = { min: 450, max: 1100 }; // ranked Top 5 orders: up to 55% of a generic day
   const BOB_MIN_P = 30; // grams of protein for it to count as a proper meal
+  const REF_NO = /grill|lettuce-wrapped/i;
+  let refMemo = null;
+  function reference(mode = 'ns') {
+    const key = mode + '|' + items.length + '|' + overridesKey;
+    if (refMemo && refMemo.key === key) return refMemo;
+    const by = new Map();
+    for (const it of items) {
+      if (priceOf(it) == null || REF_NO.test(it.name)) continue; const m = macros(it, mode); if (!(m.cal > 0)) continue;
+      const kind = MAIN_CATS.has(it.cat) ? 'm' : it.cat === 'Sides' ? 's' : null; if (!kind) continue;
+      if (!by.has(it.chain)) by.set(it.chain, { m: [], s: [] }); by.get(it.chain)[kind].push([m.cal, m.p, m.f, m.c, priceOf(it)]);
+    }
+    const pd = [], p100 = [], f100 = [], c100 = [], kcal = [];
+    const add = (a, b, c) => {
+      let cal = a[0], p = a[1], f = a[2], cc = a[3], pr = a[4];
+      if (b) { cal += b[0]; p += b[1]; f += b[2]; cc += b[3]; pr += b[4]; } if (c) { cal += c[0]; p += c[1]; f += c[2]; cc += c[3]; pr += c[4]; }
+      if (cal < 300 || cal > 1600) return; pd.push(p / pr); p100.push((p * 100) / cal); f100.push((f * 100) / cal); c100.push((cc * 100) / cal); kcal.push(cal);
+    };
+    for (const { m, s: sd } of by.values()) for (let i = 0; i < m.length; i++) {
+      add(m[i]); for (const x of sd) add(m[i], x);
+      for (let j = i; j < m.length; j++) { add(m[i], m[j]); for (const x of sd) add(m[i], m[j], x); }
+    }
+    const anchors = (arr, up) => { arr.sort((a, b) => a - b); const at = (q) => arr[Math.min(arr.length - 1, Math.floor(q * arr.length))]; return up ? { lo: at(0.01), mid: at(0.5), hi: arr[arr.length - 1] } : { lo: at(0.99), mid: at(0.5), hi: arr[0] }; };
+    kcal.sort((a, b) => a - b);
+    refMemo = { key, n: pd.length, pd: anchors(pd, true), p100: anchors(p100, true), f100: anchors(f100, false), c100: anchors(c100, false), medianCal: kcal[Math.floor(kcal.length / 2)] };
+    return refMemo;
+  }
+  // 0 = worst 1% of fast-food orders, 50 = typical (median), 100 = best on these menus; works for lower-is-better too
+  function relScore(v, a) {
+    if (v == null || !isFinite(v) || !a) return 0;
+    const up = a.hi >= a.lo; const t = up ? v : -v, lo = up ? a.lo : -a.lo, mid = up ? a.mid : -a.mid, hi = up ? a.hi : -a.hi;
+    if (t <= lo) return 0; if (t >= hi) return 100;
+    return t <= mid ? (50 * (t - lo)) / (mid - lo) : 50 + (50 * (t - mid)) / (hi - mid);
+  }
+  const rel = (metric, v, mode = 'ns') => relScore(v, reference(mode)[metric]);
+  // calories against a generic 2,000-cal day: 30% of the day (600) or less = 100, half (1,000) = 50, 70% (1,400) or more = 0
+  const calScore = (cal) => { const sh = cal / GENERIC_DAY; return sh <= 0.3 ? 100 : sh <= 0.5 ? 100 - 250 * (sh - 0.3) : sh <= 0.7 ? 50 - 250 * (sh - 0.5) : 0; };
   const BOB_NO = /grill|wrap|salad|poutine|bowl|snack box|veggie|plant|impossible|beyond|triple|grandpa/i;
   const BOB_CHICKEN = /sandwich|burger|mcchicken|mccrispy|junior chicken|chicken jr|cruncher|club|buddy|strip|nugget|tender|chicken fries/i;
   const BOB_SIDEKICK = /strip|nugget|tender|chicken fries/i; // fine in an order, but not on their own
   const bobEligible = (it) => (it.cat === 'Burgers' || (it.cat === 'Chicken' && BOB_CHICKEN.test(it.name))) && !BOB_NO.test(it.name);
   const bobAnchor = (it) => it.cat === 'Burgers' || !BOB_SIDEKICK.test(it.name);
-  const cl01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
-  const bobParts = (cal, p, price) => ({
-    value: price > 0 ? cl01((p / price - 2) / 5) : 0, // protein per dollar: 2 g scores 0, 7 g scores 100
-    lean: cal > 0 ? cl01((p * 100 / cal - 3) / 7) : 0, // protein per 100 cal: 3 g scores 0, 10 g scores 100
-    light: cl01((BOB_CAL.max - cal) / (BOB_CAL.max - BOB_CAL.full)), // 600 cal or less scores 100, 1,000 scores 0
+  const bobParts = (cal, p, price, ref = reference('ns')) => ({
+    value: price > 0 ? relScore(p / price, ref.pd) / 100 : 0,
+    lean: cal > 0 ? relScore((p * 100) / cal, ref.p100) / 100 : 0,
+    light: calScore(cal) / 100,
   });
   const bobRaw = (b) => BOB_W.value * b.value + BOB_W.lean * b.lean + BOB_W.light * b.light;
   function bobScore(t) {
@@ -255,24 +293,24 @@ const Engine = (() => {
     const chainsIn = groups.map((g) => g.chain);
     return { chain: chainsIn.join(' + '), chains: chainsIn, stops: groups.length, groups, parts, ...t, price, approx, unpriced, p100: (t.p / t.cal) * 100, bob: bobScore({ ...t, price: price || 0 }) };
   }
-  // ---- colour bands for order numbers: 3 = great (green), 2 = good (yellow), 1 = fair (orange), 0 = poor (red)
-  const RATE = {
-    bob: { up: true, t: [65, 55, 40] }, // Bob score
-    cal: { up: false, t: [600, 800, 1000] }, // order calories
-    protein: { up: true, t: [45, 35, 25] }, // grams of protein in the order
-    p100: { up: true, t: [7, 6, 5] }, // protein per 100 cal
-    pd: { up: true, t: [6, 5, 4] }, // protein per dollar (cost per 10 g: $1.67 / $2.00 / $2.50)
-    fat100: { up: false, t: [4, 4.7, 5.5] }, // fat per 100 cal
-    carb100: { up: false, t: [8, 10, 12] }, // carbs per 100 cal
-  };
+  // ---- colour bands: 3 = great (green), 2 = good (yellow), 1 = fair (orange), 0 = poor (red)
+  // Relative numbers (value, macros, fat, carbs, calories, Bob score) are banded on their 0-100 score:
+  // 80+ great, 60+ good, 40+ fair (a typical fast-food order scores about 50), under 40 poor.
   const RATE_LABEL = ['Poor', 'Fair', 'Good', 'Great'];
+  const band = (score) => (score == null || !isFinite(score) ? null : score >= 80 ? 3 : score >= 60 ? 2 : score >= 40 ? 1 : 0);
   function rate(metric, v) {
-    const r = RATE[metric]; if (!r || v == null || !isFinite(v)) return null;
-    const ok = (lim) => (r.up ? v >= lim : v <= lim);
-    return ok(r.t[0]) ? 3 : ok(r.t[1]) ? 2 : ok(r.t[2]) ? 1 : 0;
+    if (v == null || !isFinite(v)) return null;
+    if (metric === 'bob') return band(v);
+    if (metric === 'cal') return band(calScore(v));
+    if (metric === 'protein') return v >= 45 ? 3 : v >= 35 ? 2 : v >= 25 ? 1 : 0; // grams in the order
+    return band(rel(metric, v)); // pd, p100, f100, c100
   }
-  // one item (or deal) on its own: half protein per dollar, half protein per 100 cal
-  function itemRating(cal, p, price) { if (!(cal > 0)) return null; const b = bobParts(cal, p, price || 0); const sc = price > 0 ? (b.value + b.lean) / 2 : b.lean; return { score: Math.round(sc * 100), level: rate('bob', Math.round(sc * 100)), priced: price > 0 }; }
+  // one item (or deal) on its own: half protein per dollar, half protein per 100 cal, both relative to fast food
+  function itemRating(cal, p, price) {
+    if (!(cal > 0)) return null; const ref = reference('ns');
+    const l = relScore((p * 100) / cal, ref.p100); const sc = price > 0 ? (relScore(p / price, ref.pd) + l) / 2 : l;
+    return { score: Math.round(sc), level: band(sc), priced: price > 0 };
+  }
 
   const topMemo = new Map();
   function topFives(opts) {
@@ -281,7 +319,7 @@ const Engine = (() => {
     if (topMemo.has(memoKey)) return topMemo.get(memoKey);
     const today = todayStr();
     const ok = (cal, p) => cal >= BOB_CAL.min && cal <= BOB_CAL.max && p >= BOB_MIN_P;
-    const sc = (cal, p, price) => bobRaw(bobParts(cal, p, price));
+    const ref = reference(mode); const sc = (cal, p, price) => bobRaw(bobParts(cal, p, price, ref));
     // units a stop can be built from: single priced items, or a current deal whose food all qualifies
     const unitsBy = new Map(); const addUnit = (chain, u) => { if (!unitsBy.has(chain)) unitsBy.set(chain, []); unitsBy.get(chain).push(u); };
     const mk = (parts, deal) => { let cal = 0, p = 0; for (const it of parts) { const m = macros(it, mode); cal += m.cal; p += m.p; } return { parts, deal: deal || null, cal, p, price: deal ? deal.price : parts.reduce((a, it) => a + priceOf(it), 0), anchor: parts.some(bobAnchor), ids: parts.map((x) => x.id) }; };
@@ -357,6 +395,6 @@ const Engine = (() => {
     CHAINS, CATS, MAIN_CATS, GRADES, load, setOverrides, setCustomDeals, allDeals,
     get items() { return items; }, get sauces() { return sauces; }, get curve() { return curve; },
     byId: (id) => byId.get(id), sauceByKey: (k) => sauceByKey.get(k), dealById: (id) => dealById.get(id),
-    STOP_PENALTY, macros, hasNs, priceOf, isMine, isApprox, isPlainFries, scoreOf, gradeOf, itemKey, dealKey, dealPicks, resolve, totals, ideas, topFives, bobScore, bobOrder, BOB_W, BOB_CAL, BOB_MIN_P, RATE, RATE_LABEL, rate, itemRating, todayStr, r1,
+    STOP_PENALTY, macros, hasNs, priceOf, isMine, isApprox, isPlainFries, scoreOf, gradeOf, itemKey, dealKey, dealPicks, resolve, totals, ideas, topFives, bobScore, bobOrder, BOB_W, BOB_CAL, BOB_MIN_P, GENERIC_DAY, RATE_LABEL, rate, rel, calScore, band, reference, itemRating, todayStr, r1,
   };
 })();

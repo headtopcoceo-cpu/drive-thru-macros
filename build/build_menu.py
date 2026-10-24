@@ -190,6 +190,8 @@ for r in lines('bk.txt'):
 
 for it in items:
     if it.get('ns') and it['ns']['cal'] == it['cal']: del it['ns']
+# salads are out of the app (Bobby's call, Oct 24 2026)
+items = [it for it in items if it['cat'] != 'Salads']
 SAUCES = OLD['sauces']
 info = OLD.get('priceInfo', {})
 info['pulled'] = 'October 23, 2026'
