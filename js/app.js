@@ -430,7 +430,7 @@
     const bbb = BIG_BACK_BOB.map((o) => E.bobOrder(o, 'ns'));
     S.lastTop5 = { one: r.one, two: r.two, bbb };
     const sub = $('top5-sub'); sub.replaceChildren();
-    sub.append('The best cheat meals for your money, scored against fast food itself: ', el('b', '', '50 is a typical fast-food order, 100 the best on these menus'), `. Protein per dollar counts most. Two or more items from one restaurant, or a chicken item from one place and a burger from another, ${fmtC(r.cal.min)}\u2013${fmtC(r.cal.max)} cal with at least ${r.minP} g protein, ordered without sauce, with current deals counted. No triple-patty burgers, grilled chicken, lettuce wraps, veggie burgers, chili or sides.`);
+    sub.append('The best cheat meals for your money, scored against fast food itself: ', el('b', '', '50 is a typical fast-food order, 100 the best on these menus'), `. Protein per dollar counts most. Two or more items from one restaurant, or a chicken item from one place and a burger from another, ${fmtC(r.cal.min)}\u2013${fmtC(r.cal.max)} cal with at least ${r.minP} g protein, ordered without sauce, with current deals counted. No triple-patty burgers, grilled chicken, veggie burgers, chili or sides.`);
     for (const k of ['one', 'two']) { const ol = $('t5-' + k); ol.replaceChildren(); r[k].forEach((x, i) => ol.append(bobRow(x, i, k))); if (!r[k].length) ol.append(el('li', 'empty-note', 'Nothing fits right now.')); }
     const take = $('t5-take'); take.replaceChildren();
     const o = r.one[0], t = r.two[0];

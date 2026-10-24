@@ -91,7 +91,6 @@ const Engine = (() => {
     const mainsBy = new Map(), friesBy = new Map();
     for (const it of items) {
       if (!okChain(it.chain) || priceOf(it) == null) continue;
-      if (/lettuce-wrapped/i.test(it.name)) continue; // nobody actually orders these
       const isMain = MAIN_CATS.has(it.cat) || (includeBreakfast && it.cat === 'Breakfast' && it.p >= 10);
       if (isMain) { if (!mainsBy.has(it.chain)) mainsBy.set(it.chain, []); mainsBy.get(it.chain).push(it); }
       if (isPlainFries(it)) { if (!friesBy.has(it.chain)) friesBy.set(it.chain, []); friesBy.get(it.chain).push(it); }
@@ -216,16 +215,16 @@ const Engine = (() => {
   // ---- Bob's Top 5s: satisfying fast-food meals that are good value and still light. Ranked on value (protein per
   // dollar), protein per 100 cal and keeping calories low. One restaurant: two or more different items. Two
   // restaurants: a chicken item from one and a beef burger from the other. Only burgers, chicken sandwiches (no
-  // grilled), strips and nuggets; no triple-patty burgers, lettuce wraps, veggie patties, wraps, fish, sides or salads.
+  // grilled), strips and nuggets; no triple-patty burgers, veggie patties, wraps, fish or sides.
   // The Bob score is relative to fast food, not to ideal macros. A reference set of every realistic one-restaurant
   // cheat meal on these menus (one or two mains, with or without a side, no sauce, 300-1,600 cal; grilled chicken and
-  // lettuce wraps left out) sets the scale: 0 = the worst 1% of those orders, 50 = a typical one (the median),
+  // salads were never in) sets the scale: 0 = the worst 1% of those orders, 50 = a typical one (the median),
   // 100 = the best on these menus. Calories are judged against a generic 2,000-cal day, not personal targets.
   const BOB_W = { value: 0.5, lean: 0.3, light: 0.2 }; // protein per dollar, protein per 100 cal, calories
   const GENERIC_DAY = 2000;
   const BOB_CAL = { min: 450, max: 1100 }; // ranked Top 5 orders: up to 55% of a generic day
   const BOB_MIN_P = 30; // grams of protein for it to count as a proper meal
-  const REF_NO = /grill|lettuce-wrapped/i;
+  const REF_NO = /grill/i;
   let refMemo = null;
   function reference(mode = 'ns') {
     const key = mode + '|' + items.length + '|' + overridesKey;
