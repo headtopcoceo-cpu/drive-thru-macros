@@ -5,7 +5,7 @@ No-sauce macros, pre-tax prices, Ontario deals and meal ideas for McDonald's, We
 - `index.html`, `js/`, `data/`, `sw.js`, `manifest.webmanifest`, `icons/`: the app (served by GitHub Pages).
 - `data/menu.json`: 409 menu items with nutrition from each chain's own Canadian data and prices pulled October 23, 2026.
 - `data/deals.json`: current deals, refreshed weekly.
-- The Ideas tab opens with **Bob's Top 5s**: the best five orders at one restaurant and the best five across two, ranked mostly on price per gram of protein and protein per 100 cal (burgers, crispy chicken sandwiches, strips and nuggets only), followed by Big Back Bob: your three go-to orders, scored the same way.
+- The Ideas tab opens with **Bob's Top 5s**: the best five orders at one restaurant and the best five across two, ranked only on protein per 100 cal and price per gram of protein, 50/50 on the whole order (burgers, crispy chicken sandwiches, strips and nuggets only, 500–1,800 cal), followed by Big Back Bob: your three go-to orders, scored the same way.
 - `build/`: scripts and raw data used to build `data/menu.json` and the Claude-hosted copy of the page.
 
 Your meal log stays on your phone. Save a backup under More now and then.
