@@ -1,0 +1,70 @@
+# name|cat|price|cal|p|f|c|removed|nscal|nsp|nsf|nsc|note   (Wendy's store 6425 pickup prices, Oct 23 2026)
+Dave's Single|Burgers|7.59|560|29|34|35|Ketchup+Mayonnaise|500|29|28|33|
+Dave's Double|Burgers|8.99|810|49|53|35|Ketchup+Mayonnaise|740|49|46|33|
+Dave's Triple|Burgers|10.79|1090|71|75|36|Ketchup+Mayonnaise|1030|71|68|34|
+Baconator|Burgers|10.79|900|58|59|34|Mayonnaise+Ketchup|830|57|53|32|
+Son of Baconator|Burgers|8.29|620|35|38|34|Ketchup+Mayonnaise|550|34|32|32|
+Bacon Deluxe Single|Burgers|8.79|610|34|38|35|Ketchup+Mayonnaise|550|34|31|33|
+Bacon Deluxe Double|Burgers|10.39|860|54|56|35|Ketchup+Mayonnaise|790|53|50|33|
+Bacon Deluxe Triple|Burgers|12.19|1140|76|78|36|Ketchup+Mayonnaise|1080|75|72|34|
+Double Stack|Burgers|3.99|410|25|23|25|Ketchup|400|25|23|24|
+Double Jr. Bacon Cheeseburger|Burgers|3.99|490|28|31|25|Mayonnaise|440|28|25|25|
+Jr. Hamburger Deluxe|Burgers|2.49|300|14|16|26|Ketchup+Mayonnaise|250|13|11|24|
+Jr. Cheeseburger Deluxe|Burgers|2.99|340|16|20|26|Ketchup+Mayonnaise|280|16|14|25|
+Jr. Bacon Cheeseburger|Burgers|2.99|370|19|22|25|Mayonnaise|320|19|16|25|
+Cheesy Cheddarburger|Burgers|2.99|300|16|16|24||||||
+3-Piece Korean BBQ Chicken Strips|Chicken|8.29|440|25|20|43|Korean BBQ sauce|380|25|19|30|
+5-Piece Korean BBQ Chicken Strips|Chicken|11.59|740|42|33|72|Korean BBQ sauce|640|41|32|50|
+3-Piece Buffalo Chicken Strips|Chicken|8.29|390|25|20|31|Buffalo sauce|380|25|19|30|
+5-Piece Buffalo Chicken Strips|Chicken|11.59|650|41|33|51|Buffalo sauce|640|41|32|50|
+Buffalo Chicken Sandwich|Chicken|7.89|460|24|19|46|Ranch Sauce|410|24|14|45|
+Spicy Buffalo Chicken Sandwich|Chicken|7.99|470|24|21|46|Ranch Sauce|390|24|13|45|Wendy's lists 440 cal; its own component data adds to 470.
+Spicy Chicken Sandwich|Chicken|7.39|450|24|20|45|Mayonnaise|390|24|13|45|
+Classic Chicken Sandwich|Chicken|7.29|460|24|21|46|Mayonnaise|410|24|14|46|
+Classic Asiago Ranch Chicken Club|Chicken|7.99|580|33|30|47|Ranch Sauce|510|32|22|46|
+Spicy Asiago Ranch Chicken Club|Chicken|7.99|570|32|29|46|Ranch Sauce|500|32|21|46|
+Crispy Chicken Sandwich (Jr crispy)|Chicken|3.99|330|13|16|32|Mayonnaise|270|13|10|31|
+Chicken Strips (3)|Chicken|6.99|380|25|19|30||||||
+Chicken Strips (5)|Chicken|10.19|640|41|32|50||||||
+Crispy Nuggets (6)|Chicken|3.99|190|11|11|13||||||
+Crispy Nuggets (10)|Chicken|7.49|320|18|18|21||||||
+Grilled Chicken Wrap|Chicken|3.89|300|18|14|25|Ranch Sauce|230|17|7|24|
+Classic Chicken Wrap|Chicken|3.89|480|25|25|38|Ranch Sauce|410|25|18|37|
+Spicy Chicken Wrap|Chicken|3.89|350|16|19|31|Ranch Sauce|280|15|12|30|
+Grilled Chicken Wrap Duo|Chicken|7.49|600|36|28|50|Ranch Sauce|460|34|14|48|Two Grilled Chicken Wraps.
+Cobb Salad (no dressing)|Salads|10.39|410|39|22|15||||||Wendy's 590 cal includes the dressing packet.
+Grilled Caesar Salad (no dressing)|Salads|10.39|320|34|13|15||||||Wendy's 560 cal includes the dressing packet.
+Apple Pecan Chicken Salad (no dressing)|Salads|10.39|410|32|21|29||||||Wendy's 490 cal includes the dressing packet.
+Taco Salad|Salads|10.39|660|30|35|54||||||
+Side Caesar (no dressing)|Salads|3.29|150|7|8|12||||||Wendy's 380 cal includes the dressing packet.
+Kids fries|Sides|2.19|210|3|9|28||||||
+Small fries|Sides|3.09|260|4|12|35||||||
+Medium fries|Sides|4.69|350|5|16|47||||||
+Large fries|Sides|5.09|470|7|21|63||||||
+Buffalo Shaker Fries|Sides|3.79|290|5|12|42||||||
+Baconator Fries|Sides|4.19|400|12|22|38||||||
+Cheese Fries|Sides|3.99|400|10|22|42||||||Wendy's lists 470 cal; its own component data adds to 400.
+Chili Cheese Fries|Sides|4.59|520|17|27|53||||||
+Chili Cheese Nachos|Sides|2.99|370|11|20|36||||||
+Small Poutine|Sides|4.09|330|11|18|32||||||
+Poutine|Sides|5.59|610|20|33|57||||||
+Bacon Poutine|Sides|6.19|670|25|37|57||||||Wendy's lists 640 cal; its own component data adds to 670.
+Small Chili|Sides|3.79|280|19|12|24||||||
+Large Chili|Sides|4.69|370|26|17|29||||||
+Plain Baked Potato|Sides|2.89|260|7|0.4|60||||||
+Sour Cream and Chive Baked Potato|Sides|3.09|330|9|7|63||||||
+Bacon Cheddar Baked Potato|Sides|4.09|400|15|11|63||||||
+French Toast Sticks (4)|Breakfast|4.69|490|11|17|76||||||
+French Toast Sticks (6)|Breakfast|5.19|660|16|25|92||||||
+Cinnabon Pull-Apart|Desserts|4.89|530|9|24|70||||||
+Jr. Chocolate Frosty|Desserts|1.59|190|5|6|31||||||
+Small Chocolate Frosty|Desserts|2.49|300|8|9|49||||||
+Medium Chocolate Frosty|Desserts|3.29|380|10|11|62||||||
+Large Chocolate Frosty|Desserts|3.69|490|14|15|81||||||
+Jr. Vanilla Frosty|Desserts|1.59|190|5|6|32||||||
+Small Vanilla Frosty|Desserts|2.49|300|8|9|50||||||
+Medium Vanilla Frosty|Desserts|3.29|380|10|11|63||||||
+Large Vanilla Frosty|Desserts|3.69|490|13|15|82||||||
+Small Oreo Brownie Frosty|Desserts|3.69|440|8|19|63||||||
+Medium Oreo Brownie Frosty|Desserts|4.49|550|11|23|79||||||
+Large Oreo Brownie Frosty|Desserts|4.99|650|13|26|95||||||

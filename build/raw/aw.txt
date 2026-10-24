@@ -1,0 +1,65 @@
+# name|cat|price|cal|p|f|c|est|removed|note   (A&W Canada nutrition API; prices approximate from aandwmenu.ca + froqel.com, which agree)
+# est codes: T = full-size Teen/sauce burger (-90 cal,-10 F,-4 C), t = Buddy-size (-45,-5,-2), M = full-size mayo chicken (-80,-10,-1), m = Buddy-size mayo (-40,-5,-0.5), W = wrap (-50,-7,-1)
+Teen Burger|Burgers|8.49|500|27|30|36|T|Teen sauce, ketchup, mustard|
+Teen Burger (lettuce-wrapped)|Burgers|8.49|340|20|22|9|T|Teen sauce, ketchup, mustard|Lettuce instead of the bun.
+Double Teen Burger|Burgers|10.49|680|43|48|36|T|Teen sauce, ketchup, mustard|
+Double Teen Burger (lettuce-wrapped)|Burgers|10.49|520|34|35|9|T|Teen sauce, ketchup, mustard|Lettuce instead of the bun.
+Mozza Burger|Burgers|8.49|620|27|39|37|||
+Double Mozza Burger|Burgers|10.49|800|41|52|37|||
+Mama Burger|Burgers|6.49|400|20|24|35|T|Teen sauce, ketchup, mustard|
+Mama Burger with cheese|Burgers||460|24|29|34|T|Teen sauce, ketchup, mustard|Priced as a Mama Burger plus a cheese add-on, which isn't listed publicly.
+Mama Burger (lettuce-wrapped)|Burgers|6.49|250|15|17|8|T|Teen sauce, ketchup, mustard|Lettuce instead of the bun.
+Papa Burger|Burgers|8.49|580|40|40|35|T|Teen sauce, ketchup, mustard|
+Papa Burger with cheese|Burgers||640|40|42|34|T|Teen sauce, ketchup, mustard|
+Papa Burger (lettuce-wrapped)|Burgers|8.49|430|29|30|8|T|Teen sauce, ketchup, mustard|Lettuce instead of the bun.
+Grandpa Burger|Burgers|10.49|760|53|58|35|T|Teen sauce, ketchup, mustard|
+Grandpa Burger with cheese|Burgers||820|56|54|34|T|Teen sauce, ketchup, mustard|
+Grandpa Burger (lettuce-wrapped)|Burgers|10.49|610|43|43|8|T|Teen sauce, ketchup, mustard|Lettuce instead of the bun.
+Cheddar Bacon Uncle Burger|Burgers|10.39|740|38|53|38|T|Mayo, ketchup, mustard|
+Buddy Burger|Burgers|2.99|310|13|15|36|t|Teen sauce, ketchup, mustard|
+Buddy Cheeseburger|Burgers|3.49|370|16|16|35|t|Teen sauce, ketchup, mustard|
+Double Buddy Burger|Burgers|3.99|435|21|22|35|t|Teen sauce, ketchup, mustard|
+Spicy Piri-Piri Beef Buddy|Burgers|3.99|330|14|17|30|||
+Baby Burger|Burgers||240|12|11|29|||Kids' size.
+Chubby Chicken Burger|Chicken|7.69|490|21|27|44|M|Mayo|
+Chubby Chicken Burger (lettuce-wrapped)|Chicken|7.69|370|17|27|17|M|Mayo|Lettuce instead of the bun.
+Spicy Habanero Chicken Burger|Chicken|7.79|550|20|26|47|M|Habanero sauce|
+Spicy Chipotle Chicken Burger|Chicken||550|20|26|47|M|Chipotle sauce|
+BLT Chicken Burger|Chicken|9.29|600|25|35|50|M|Mayo|
+Chubby Chicken Cruncher|Chicken|9.19|630|26|29|60|M|Mayo|
+Nashville Hot Chicken Cruncher|Chicken|9.19|720|26|41|60|M|Mayo|
+BLT Chicken Cruncher|Chicken|10.79|690|30|33|60|M|Mayo|
+Chicken Buddy Burger|Chicken|3.79|360|11|19|35|m|Mayo|
+Double Chicken Buddy Burger|Chicken|4.99|480|18|25|44|m|Mayo|
+Spicy Piri-Piri Chicken Buddy|Chicken|3.99|320|12|14|42|||
+Chicken Strips (3)|Chicken|7.49|300|19.5|15|21|||
+Chicken Strips (5)|Chicken|10.29|500|32.5|25|35|||
+Spicy Chipotle Chicken Wrap|Chicken|3.89|290|11|15|28|W|Chipotle mayo|
+Bacon Chicken Wrap|Chicken|3.89|290|11|14|28|W|Mayo|
+2 Spicy Chipotle Chicken Wraps|Chicken|6.49|580|22|30|56|W2|Chipotle mayo|Two wraps.
+2 Bacon Chicken Wraps|Chicken|6.49|580|22|28|56|W2|Mayo|Two wraps.
+Masala Veggie Burger|Fish & veggie|6.00|490|15|19|60|||
+Crispy Veggie Burger|Fish & veggie||570|15|28|60|M|Mayo|
+A&W Plant-Based Burger|Fish & veggie|8.49|500|21|30|36|||
+Spicy Piri-Piri Potato Buddy|Fish & veggie|3.99|320|7|14|43|||
+Fish Sandwich|Fish & veggie||600|17|33|56|||
+Kids fries|Sides||250|3|12|35|||
+Regular fries|Sides|3.79|340|5|18|54|||
+Onion Rings|Sides|4.99|520|7|32|50|||
+Sweet Potato Fries|Sides|4.99|360|4|18|47|||Calories include the chipotle mayo dip.
+Poutine|Sides|5.99|610|23|33|58|||
+Hash Brown|Breakfast|2.59|180|2|11|18|||
+Bacon & Egger|Breakfast|4.99|400|18|30|30|||
+Bacon & Egger (English muffin)|Breakfast|4.99|380|18|21|29|||
+Sausage & Egger|Breakfast|4.99|530|24|34|34|||
+Sausage & Egger (English muffin)|Breakfast|4.99|510|24|32|31|||
+Cheese & Egger|Breakfast|3.49|360|14|25|30|||
+Cheese & Egger (English muffin)|Breakfast|3.49|340|15|18|29|||
+Sausage & Cheddar|Breakfast|3.99|460|17|29|33|||
+Chicken & Cheddar|Breakfast||410|14|30|35|||
+Spicy Chipotle Chicken & Cheddar|Breakfast||410|14|25|35|||
+Classic Bacon & Eggs|Breakfast|8.79|550|30|27|43|||
+All-Canadian Special|Breakfast|10.79|860|34|56|55|||
+Breakfast Wrap|Breakfast|3.89|230|13|12|18|||
+Pancakes with Syrup|Breakfast|4.99|590|9|17|90|||
+Apple Turnover|Desserts|1.69|280|3|15|38|||

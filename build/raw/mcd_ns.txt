@@ -1,0 +1,53 @@
+201233|Creamy Habanero Sauce|500|16|25|52
+201230|Mayonnaise-Style Sauce|550|17|28|59
+201232|Mayonnaise-Style Sauce|710|26|44|52
+200887|Mayonnaise-Style Sauce|320|16|15|29
+200964|Mayonnaise-Style Sauce|320|14|14|35
+200709|Mayonnaise-Style Sauce|490|22|20|57
+200695|Mayonnaise-Style Sauce|500|23|22|54
+200703|Mayonnaise-Style Sauce|510|23|21|57
+201453|Creamy Chipotle Sauce|650|39|34|47
+201240|Mustard+Mayonnaise-Style Sauce+Ketchup|280|15|12|30
+201073|Ketchup+Mustard|310|18|14|28
+200944|Big Mac Sauce|430|24|19|43
+200946|Big Mac Sauce|600|37|31|45
+200154|Ketchup+Mustard|230|12|8|28
+200155|Mustard+Ketchup|360|21|18|30
+200140|Mustard+Ketchup|280|14|12|29
+200147|Mustard+Ketchup|410|24|21|30
+200159|Mustard+Ketchup|510|29|27|37
+200160|Ketchup+Mustard|410|24|20|35
+200149|Mustard+Ketchup|730|47|44|37
+200150|Mustard+Ketchup|630|41|37|36
+200158|Mustard+Mayonnaise-Style Sauce+Ketchup|530|31|29|37
+201002|Mustard+Mayonnaise-Style Sauce+Ketchup|750|48|46|38
+201462|Caesar Parmesan Sauce|520|34|22|48
+201464|Caesar Parmesan Sauce|550|31|25|51
+201465|Caesar Parmesan Sauce|410|31|14|40
+201448|Creamy Parmesan Sauce+Marinara Sauce|530|36|24|44
+201306|Creamy Chipotle Sauce|500|28|21|51
+201304|Creamy Chipotle Sauce|370|30|11|39
+201195|Sweet Chili Sauce+Mayonnaise-Style Sauce|280|12|10|36
+201086|Mayonnaise-Style Sauce|420|29|15|43
+201093|Creamy Habanero Sauce|420|29|15|43
+201101|Creamy Habanero Sauce|490|33|20|44
+201087|Mayonnaise-Style Sauce|490|33|20|44
+201088|Mayonnaise-Style Sauce|290|31|5|31
+201085|Mayonnaise-Style Sauce|360|36|10|33
+201153|Creamy Habanero Sauce|290|31|5|31
+201152|Creamy Habanero Sauce|360|36|10|33
+200880|Creamy Habanero Sauce|380|16|16|44
+200187|Mayonnaise-Style Sauce|380|16|16|44
+200186|Mayonnaise-Style Sauce|280|12|10|36
+201138|Spicy Buffalo Sauce|230|18|8|21
+201144|Spicy Buffalo Sauce|300|17|13|27
+201143|Mayonnaise-Style Sauce+Sweet Chili Sauce|330|30|9|35
+201148|Mayonnaise-Style Sauce+Sweet Chili Sauce|460|27|19|47
+201147|Mayonnaise-Style Sauce|520|31|23|48
+201141|Mayonnaise-Style Sauce|390|33|12|36
+201145|Premium Ranch Sauce|230|18|8|21
+201142|Premium Ranch Sauce|300|17|13|27
+201340|Mayonnaise-Style Sauce|360|11|10|54
+201339|Creamy Habanero Sauce|360|11|10|54
+200151|Tartar Sauce|310|14|11|39
+200148|Tartar Sauce|470|23|19|52

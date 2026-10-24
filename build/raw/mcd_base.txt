@@ -1,0 +1,113 @@
+201156|Mighty McGriddles|Breakfast|590|24|36|43
+201157|Mighty McMuffin|Breakfast|520|26|33|29
+201233|Spicy Egg & Hash Brown Breakfast Wrap|Breakfast|630|17|39|54
+201230|Chicken Breakfast Wrap|Breakfast|680|17|42|60
+201232|Sausage, Bacon & Egg Breakfast Wrap|Breakfast|800|26|54|53
+201227|Egg 'N Cheese McMuffin|Breakfast|280|14|12|28
+201228|Egg 'N Cheese McGriddles|Breakfast|340|12|14|41
+200887|Egg BLT McMuffin|Breakfast|360|16|19|29
+200964|Chicken McMuffin|Breakfast|360|14|18|35
+200049|Egg McMuffin|Breakfast|290|16|11|28
+200059|Sausage 'N Egg McMuffin|Breakfast|440|20|26|29
+200041|Bacon 'N Egg McMuffin|Breakfast|310|16|15|28
+200062|Sausage McMuffin|Breakfast|370|15|22|28
+200686|Plain Bagel with Butter|Breakfast|320|10|7|54
+200677|Everything Bagel with Butter|Breakfast|330|10|9|52
+200685|Sesame Bagel with Butter|Breakfast|330|10|9|54
+200674|Plain Bagel with Cream Cheese|Breakfast|370|12|10|58
+200669|Everything Bagel with Cream Cheese|Breakfast|380|13|12|55
+200683|Sesame Bagel with Cream Cheese|Breakfast|380|13|11|57
+200709|Egg BLT Bagel (Plain)|Breakfast|550|23|27|57
+200695|Egg BLT Bagel (Everything)|Breakfast|560|23|29|55
+200703|Egg BLT Bagel (Sesame)|Breakfast|570|23|28|57
+200706|Bacon 'N Egg Bagel (Plain)|Breakfast|540|25|24|57
+200699|Bacon 'N Egg Bagel (Everything)|Breakfast|550|26|26|54
+200707|Bacon 'N Egg Bagel (Sesame)|Breakfast|550|26|25|57
+200705|Sausage 'N Egg Bagel (Plain)|Breakfast|610|26|31|56
+200698|Sausage 'N Egg Bagel (Everything)|Breakfast|620|27|33|54
+200700|Sausage 'N Egg Bagel (Sesame)|Breakfast|620|26|33|56
+200963|Chicken McGriddles|Breakfast|360|10|14|47
+200044|Bacon, Egg & Cheese McGriddles|Breakfast|380|14|18|42
+200063|Sausage, Egg & Cheese McGriddles|Breakfast|510|19|29|42
+200061|Sausage McGriddles|Breakfast|390|10|21|41
+200610|Breakfast Burrito|Breakfast|290|13|16|23
+200052|English Muffin with Butter|Breakfast|170|5|4|27
+200054|Hash Browns|Sides|160|1|10|16
+200055|Hotcakes with Syrup and Butter|Breakfast|550|8|16|93
+200619|Hotcakes (plain)|Breakfast|350|8|9|60
+201453|McExtreme Pulled Pork|Burgers|750|39|44|49
+201240|Cheeseburger Deluxe|Burgers|340|15|17|33
+201073|Double Hamburger|Burgers|320|18|14|32
+200944|Big Mac|Burgers|570|24|32|46
+200946|Double Big Mac|Burgers|740|38|44|48
+200154|Hamburger|Burgers|240|12|8|32
+200155|McDouble|Burgers|380|21|18|34
+200140|Cheeseburger|Burgers|290|14|12|32
+200147|Double Cheeseburger|Burgers|420|24|21|34
+200159|Quarter Pounder with Cheese|Burgers|530|29|27|41
+200160|Quarter Pounder (no cheese)|Burgers|430|24|20|40
+200149|Double Quarter Pounder with Cheese|Burgers|750|47|44|42
+200150|Double Quarter Pounder (no cheese)|Burgers|650|42|37|40
+200158|Quarter Pounder BLT|Burgers|610|31|35|43
+201002|Double Quarter Pounder BLT|Burgers|830|49|52|43
+201462|Caesar and Bacon McCrispy|Chicken|600|35|30|51
+201464|Caesar and Bacon McWrap · Crispy|Chicken|630|32|32|54
+201465|Caesar and Bacon McWrap · Grilled|Chicken|490|32|21|43
+201448|Chicken Parmi Burger|Chicken|630|37|33|49
+201444|Garlic & Black Pepper McNuggets (6)|Chicken|260|16|15|17
+201446|Garlic & Black Pepper McNuggets (10)|Chicken|430|26|25|28
+201450|Garlic & Black Pepper McNuggets (20)|Chicken|860|52|49|55
+201306|Creamy Chipotle Chicken McWrap · Crispy|Chicken|680|28|39|53
+201304|Creamy Chipotle Chicken McWrap · Grilled|Chicken|550|31|29|41
+201195|Sweet Chili Junior Chicken|Chicken|410|12|21|43
+201086|McCrispy|Chicken|520|29|26|44
+201093|Spicy McCrispy|Chicken|510|29|24|44
+201101|Spicy Bacon Deluxe McCrispy|Chicken|580|34|30|46
+201087|McCrispy Bacon Deluxe|Chicken|590|34|32|45
+201088|Grilled Chicken Sandwich|Chicken|400|31|16|32
+201085|Bacon Deluxe Grilled Chicken Sandwich|Chicken|470|36|22|33
+201153|Spicy Grilled Chicken Sandwich|Chicken|380|31|14|32
+201152|Spicy Bacon Deluxe Grilled Chicken Sandwich|Chicken|450|36|20|34
+200880|Spicy Habanero McChicken|Chicken|470|16|25|45
+200187|McChicken|Chicken|480|16|27|45
+200186|Junior Chicken|Chicken|380|12|21|36
+200351|Chicken McNuggets (4)|Chicken|170|10|9|10
+200352|Chicken McNuggets (6)|Chicken|250|16|14|15
+200349|Chicken McNuggets (10)|Chicken|410|26|23|26
+200350|Chicken McNuggets (20)|Chicken|830|52|46|51
+201138|Spicy Buffalo Chicken Snack Wrap · Grilled|Chicken|240|18|10|21
+201144|Spicy Buffalo Chicken Snack Wrap · Crispy|Chicken|310|17|15|27
+201143|Sweet Chili McWrap · Grilled|Chicken|460|30|18|45
+201148|Sweet Chili McWrap · Crispy|Chicken|590|28|28|56
+201147|Chicken & Bacon McWrap · Crispy|Chicken|610|31|32|49
+201141|Chicken & Bacon McWrap · Grilled|Chicken|480|33|22|37
+201145|Ranch Chicken Snack Wrap · Grilled|Chicken|260|18|11|22
+201142|Ranch Chicken Snack Wrap · Crispy|Chicken|320|17|16|28
+201340|McVeggie|Fish & veggie|470|11|22|55
+201339|Spicy McVeggie|Fish & veggie|450|11|20|56
+200151|Filet-O-Fish|Fish & veggie|400|14|20|40
+200148|Double Filet-O-Fish|Fish & veggie|560|23|29|53
+201445|Cheesy Bacon McFlavour Fries|Sides|550|9|36|48
+200180|Poutine|Sides|870|21|37|113
+200836|Baked Strawberry Pie|Desserts|300|3|16|35
+200084|Baked Apple Pie|Desserts|270|3|13|34
+201390|Chewy Chocolate Chunk Cookie|Desserts|250|3|11|35
+201389|Rainbow Sprinkle Cookie|Desserts|250|3|10|36
+201391|Toasted S'mores Cookie|Desserts|240|3|10|36
+201393|Chocolate Chip Muffin|Desserts|440|8|14|71
+201054|Fruit & Fibre Muffin|Desserts|380|7|14|60
+201231|Chocolate Brownie Muffin|Desserts|380|6|15|57
+201055|Blueberry Muffin|Desserts|430|7|17|66
+201056|Carrot Muffin|Desserts|440|7|16|70
+201057|Cranberry Orange Muffin|Desserts|380|5|9|71
+201058|Banana Chocolate Chunk Muffin|Desserts|440|7|14|73
+201459|SNICKERS McFlurry|Desserts|560|12|19|86
+201447|Stroopwafel McFlurry|Desserts|660|11|19|111
+201216|Strawberry Cheesecake McFlurry|Desserts|730|11|22|123
+200095|Oreo McFlurry|Desserts|570|11|19|90
+200442|SKOR McFlurry|Desserts|540|10|21|81
+201025|Smarties McFlurry|Desserts|600|12|17|99
+201315|Strawberry Sundae|Desserts|310|5|6|58
+200109|Hot Fudge Sundae|Desserts|340|7|10|55
+200108|Hot Caramel Sundae|Desserts|340|6|7|62
+200090|Vanilla Cone|Desserts|240|6|6|40

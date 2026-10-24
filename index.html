@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Drive-Thru Macros</title>
+<meta name="description" content="No-sauce macros, prices, deals and meal ideas for McDonald's, Wendy's, Harvey's, A&W and Burger King in Canada.">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1F26" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Macros">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a menu board of item cards with a receipt-style order ticket; deals and meal ideas read as cards; history is a stack of receipts. */
+:root {
+  --bg: #ECEEF2; --surface: #FFFFFF; --ink: #1A1D23; --ink-2: #5A6170; --line: #D7DBE2;
+  --accent: #E8B520; --accent-ink: #1A1D23; --plate: #E4E7EC; --receipt: #FFFEF9;
+  --good: #15723C; --warn: #855509; --bad: #C33232;
+  --c-mcd: #D63848; --c-wen: #2E6FCB; --c-har: #C2410C; --c-aw: #8A5C33; --c-bk: #1F8F5B;
+  --m-pro: #2A62B8; --m-fat: #E8B520; --m-carb: #A3AAB6;
+  --display: "Big Shoulders Display", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 10px; --navh: 0px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #13151A; --surface: #1C1F26; --ink: #ECEEF2; --ink-2: #9AA2B0; --line: #2D323C;
+    --accent: #F2C53D; --accent-ink: #13151A; --plate: #262A33; --receipt: #1E2128;
+    --good: #4CC07E; --warn: #E2A93E; --bad: #F06767;
+    --c-mcd: #F0606F; --c-wen: #5E9BF0; --c-har: #F07A3F; --c-aw: #C48D58; --c-bk: #45BF86;
+    --m-pro: #6FA2F0; --m-fat: #F2C53D; --m-carb: #7C8595;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+    --bg: #13151A; --surface: #1C1F26; --ink: #ECEEF2; --ink-2: #9AA2B0; --line: #2D323C;
+    --accent: #F2C53D; --accent-ink: #13151A; --plate: #262A33; --receipt: #1E2128;
+    --good: #4CC07E; --warn: #E2A93E; --bad: #F06767;
+    --c-mcd: #F0606F; --c-wen: #5E9BF0; --c-har: #F07A3F; --c-aw: #C48D58; --c-bk: #45BF86;
+    --m-pro: #6FA2F0; --m-fat: #F2C53D; --m-carb: #7C8595;
+    color-scheme: dark;
+  }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45; font-variant-numeric: tabular-nums; -webkit-tap-highlight-color: transparent; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button, a, input, select, label { touch-action: manipulation; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.wrap { max-width: 1260px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* header */
+.top { position: sticky; top: 0; z-index: 9; background: var(--surface); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
+.brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.brand h1 { font-family: var(--display); font-weight: 800; font-size: 26px; letter-spacing: 0.01em; text-transform: uppercase; line-height: 1; white-space: nowrap; }
+.brand span { font-size: 12px; color: var(--ink-2); }
+.tabs { display: flex; gap: 4px; background: var(--bg); padding: 3px; border-radius: 999px; }
+.tabs a { text-decoration: none; color: var(--ink-2); font-weight: 600; font-size: 14px; padding: 7px 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; }
+.tabs a[aria-current="page"] { background: var(--ink); color: var(--surface); }
+.tabs svg { width: 18px; height: 18px; display: none; }
+
+/* phone: tabs become a bottom bar */
+@media (max-width: 759px) {
+  :root { --navh: calc(58px + env(safe-area-inset-bottom, 0px)); }
+  .brand span { display: none; }
+  .tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 12; border-radius: 0; background: var(--surface); border-top: 1px solid var(--line); padding: 4px max(6px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) max(6px, env(safe-area-inset-left, 0px)); justify-content: space-around; }
+  .tabs a { flex: 1; flex-direction: column; gap: 2px; padding: 6px 2px; font-size: 11px; border-radius: 10px; min-height: 50px; justify-content: center; }
+  .tabs a[aria-current="page"] { background: transparent; color: var(--ink); }
+  .tabs a[aria-current="page"] svg { color: var(--ink); }
+  .tabs svg { display: block; }
+}
+
+main.wrap { padding-block: 16px calc(110px + var(--navh)); }
+.view[hidden] { display: none !important; }
+.loading { padding: 40px 0; text-align: center; color: var(--ink-2); }
+
+/* filters */
+.filters { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-bottom: 12px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips.scroll { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; max-width: 100%; }
+.chips.scroll::-webkit-scrollbar { display: none; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 500; color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; flex: none; }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--surface); }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--cc, var(--ink-2)); display: inline-block; flex: none; }
+.ctl-label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; margin-right: 2px; }
+.ctl { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; min-width: 0; }
+.search, .sel, .inp { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 7px 10px; font-size: 14px; min-width: 0; }
+.search { width: 14rem; max-width: 100%; }
+.takeaway { font-size: 14px; color: var(--ink-2); margin: 0 0 14px; }
+.takeaway b { color: var(--ink); font-weight: 600; }
+
+/* order layout */
+.order-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (min-width: 1000px) { .order-grid { grid-template-columns: minmax(0, 1fr) 380px; } .ticket { position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow: auto; } }
+.items { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 14.5rem), 1fr)); gap: 12px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px 12px; display: grid; grid-template-rows: auto auto 1fr auto; gap: 6px; min-width: 0; }
+.item.in { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink) inset; }
+.pic { display: grid; place-items: center; }
+.item .pic { height: 84px; }
+.item .pic svg { height: 84px; width: auto; max-width: 100%; }
+.plate { fill: var(--plate); }
+.who { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); }
+.item h3 { font-size: 16px; font-weight: 600; line-height: 1.25; }
+.off { font-size: 12px; color: var(--ink-2); }
+.off.est { color: var(--warn); }
+.nums { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); }
+.nums .cal { font-family: var(--display); font-weight: 700; font-size: 26px; color: var(--ink); line-height: 1; }
+.nums .p { color: var(--m-pro); font-weight: 600; }
+.price { font-size: 12px; color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 2px; }
+.price b { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--ink); }
+.tag { font-size: 12px; color: var(--ink-2); }
+.tag.mine { color: var(--m-pro); font-weight: 600; }
+.pv { font-family: var(--mono); font-size: 12px; }
+.pv.hi { color: var(--good); font-weight: 500; }
+.linkish { border: 0; background: none; padding: 0; color: var(--ink-2); text-decoration: underline; font-size: 12px; position: relative; }
+.linkish::after { content: ""; position: absolute; inset: -14px -8px; }
+.foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ratio { font-family: var(--mono); font-size: 12px; border-radius: 6px; padding: 2px 7px; background: var(--bg); color: var(--ink); white-space: nowrap; }
+.ratio.hi { background: color-mix(in srgb, var(--good) 16%, transparent); color: var(--good); }
+.add { border: 0; background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 999px; padding: 7px 14px; font-size: 13px; white-space: nowrap; }
+.add .n { font-family: var(--mono); }
+.more-btn { display: block; margin: 14px auto 0; }
+.empty-note { color: var(--ink-2); font-size: 14px; padding: 20px 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; }
+.panel h2 { font-family: var(--display); font-weight: 700; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
+.panel .sub { font-size: 13px; color: var(--ink-2); margin: 2px 0 12px; }
+.section-gap { margin-top: 20px; }
+.chart { position: relative; min-height: 280px; }
+.chart svg { display: block; width: 100%; height: auto; }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--ink-2); margin-bottom: 6px; }
+.legend span { display: inline-flex; align-items: center; gap: 5px; }
+.legend svg { width: 12px; height: 12px; display: block; flex: none; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,.14); padding: 6px 9px; font-size: 12px; white-space: nowrap; z-index: 3; }
+.tip .t { color: var(--ink-2); }
+
+/* ticket */
+.ticket { background: var(--receipt); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 16px 18px; font-family: var(--mono); font-size: 13px; }
+.ticket h2 { font-family: var(--display); font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ticket h2 small { font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink-2); }
+.rule { border: 0; border-top: 1.5px dashed var(--line); margin: 12px 0; }
+.line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 5px 0; }
+.line .pic svg { width: 38px; height: 30px; display: block; }
+.line .nm { min-width: 0; }
+.line .nm b { font-family: var(--body); font-weight: 600; font-size: 14px; display: block; overflow-wrap: anywhere; line-height: 1.25; }
+.line .nm span { font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.line .amt { text-align: right; white-space: nowrap; font-size: 12px; color: var(--ink-2); }
+.line .amt b { color: var(--ink); font-weight: 500; font-size: 13px; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 999px; }
+.stepper button { border: 0; background: none; width: 28px; height: 28px; font-size: 15px; line-height: 1; color: var(--ink); border-radius: 50%; }
+.stepper span { min-width: 2.2em; text-align: center; font-size: 12px; }
+.sauces { display: flex; flex-direction: column; gap: 4px; }
+.sauce-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.sauce-row .pic svg { width: 30px; height: 24px; display: block; }
+.sauce-row .nm { font-family: var(--body); font-size: 13px; min-width: 0; }
+.sauce-row .nm small { display: block; color: var(--ink-2); font-family: var(--mono); font-size: 12px; }
+.ticket .empty { color: var(--ink-2); font-family: var(--body); font-size: 14px; padding: 6px 0; margin: 0; }
+.totals { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.totals .k { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+.totals .v { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.05; }
+.split { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--line); margin: 10px 0 4px; }
+.split i { display: block; height: 100%; }
+.split-legend { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); }
+.split-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.split-legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.money { display: flex; flex-direction: column; gap: 3px; }
+.money .mrow { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.money .mrow span { color: var(--ink-2); font-size: 12px; }
+.money .mrow b { font-weight: 500; font-size: 14px; }
+.money .mrow.big b { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.05; }
+.mnote { font-family: var(--body); font-size: 12px; color: var(--ink-2); margin: 4px 0 0; }
+.scorebox { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: center; }
+.grade { width: 64px; height: 64px; border-radius: 12px; display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 40px; line-height: 1; background: var(--bg); color: var(--ink-2); }
+.gA, .gB { background: color-mix(in srgb, var(--good) 18%, transparent) !important; color: var(--good) !important; }
+.gC { background: var(--bg); color: var(--ink); }
+.gD { background: color-mix(in srgb, var(--warn) 18%, transparent) !important; color: var(--warn) !important; }
+.gE { background: color-mix(in srgb, var(--bad) 16%, transparent) !important; color: var(--bad) !important; }
+.scoretext { font-family: var(--body); font-size: 13px; color: var(--ink-2); }
+.scoretext b { font-family: var(--display); font-size: 24px; color: var(--ink); font-weight: 700; }
+.scoretext .lbl { color: var(--ink); font-weight: 600; }
+.curve svg { display: block; width: 100%; height: auto; margin-top: 8px; }
+.drag { font-family: var(--body); font-size: 12px; color: var(--ink-2); margin-top: 6px; }
+.drag b { color: var(--ink); font-weight: 600; }
+.day { display: flex; flex-direction: column; gap: 8px; font-family: var(--body); }
+.day h3 { font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 4.4rem minmax(0, 1fr); gap: 4px 8px; align-items: center; font-size: 12px; }
+.bar-row .lb { color: var(--ink-2); }
+.track { height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; display: flex; }
+.track i { display: block; height: 100%; }
+.bar-row .tx { grid-column: 2; color: var(--ink-2); }
+.bad { color: var(--bad); font-weight: 600; }
+.ok { color: var(--good); font-weight: 600; }
+.logform { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; font-family: var(--body); }
+.logform label, .field { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--ink-2); min-width: 0; }
+.logform input, .field input, .field select { border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px; background: var(--surface); font-size: 14px; min-width: 0; width: 100%; }
+.logform .go { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.btn { border: 0; background: var(--ink); color: var(--surface); font-weight: 600; border-radius: 999px; padding: 9px 18px; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; }
+.btn.accent { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { background: transparent; color: var(--ink-2); border: 1px solid var(--line); padding: 8px 14px; font-size: 13px; }
+.btn.danger { background: transparent; color: var(--bad); border: 1px solid color-mix(in srgb, var(--bad) 40%, var(--line)); padding: 8px 14px; font-size: 13px; }
+.btn:disabled { opacity: .45; cursor: default; }
+.flash { font-family: var(--body); font-size: 13px; color: var(--good); min-height: 1.2em; }
+.flash.err { color: var(--bad); }
+
+/* cart bar */
+.cartbar { position: fixed; left: 0; right: 0; bottom: var(--navh); z-index: 11; background: var(--ink); color: var(--surface); padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; }
+.cartbar[hidden] { display: none; }
+@media (min-width: 760px) { .cartbar { padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); } }
+.cartbar b { font-weight: 600; }
+.cartbar .btn { background: var(--accent); color: var(--accent-ink); padding: 7px 16px; white-space: nowrap; flex: none; }
+@media (min-width: 1000px) { .cartbar.order-only { display: none; } }
+
+/* deals and ideas */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card header { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+.card h3 { font-size: 17px; font-weight: 600; line-height: 1.25; }
+.stop-label { display: block; font-size: 12px; font-weight: 500; color: var(--ink-2); margin-top: 6px; }
+.card .desc { font-size: 13px; color: var(--ink-2); margin: 0; }
+.card .pics { display: flex; gap: 2px; flex-wrap: wrap; }
+.card .pics svg { width: 56px; height: 45px; display: block; }
+.big-price { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1; white-space: nowrap; text-align: right; }
+.big-price small { display: block; font-family: var(--body); font-weight: 500; font-size: 12px; color: var(--ink-2); }
+.save { color: var(--good); font-weight: 600; }
+.kv { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink-2); }
+.kv b { color: var(--ink); font-weight: 600; }
+.badge { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 6px; padding: 2px 7px; background: var(--bg); color: var(--ink-2); white-space: nowrap; }
+.badge.deal { background: color-mix(in srgb, var(--accent) 30%, transparent); color: var(--ink); }
+.badge.app { background: color-mix(in srgb, var(--m-pro) 18%, transparent); color: var(--m-pro); }
+.pill { font-family: var(--display); font-weight: 800; font-size: 15px; border-radius: 6px; padding: 1px 7px; background: var(--bg); color: var(--ink); }
+.slot-pick { display: flex; flex-direction: column; gap: 6px; }
+.slot-pick select { border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; background: var(--surface); font-size: 14px; width: 100%; }
+.card .acts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: auto; }
+.meta { font-size: 12px; color: var(--ink-2); }
+.meta a { color: inherit; }
+.ideas-controls { display: grid; gap: 12px; margin-bottom: 16px; }
+.budget-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.budget-row input { width: 6.5rem; }
+.check { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+.check input { width: 18px; height: 18px; }
+.info { background: var(--surface); border: 1px dashed var(--line); border-radius: var(--r); padding: 12px 14px; font-size: 13px; color: var(--ink-2); margin-bottom: 14px; }
+.info b { color: var(--ink); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: 10px; }
+.picked { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.picked li { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; }
+
+/* history */
+.hist-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.period { display: flex; align-items: center; gap: 8px; }
+.period button.nav { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; width: 34px; height: 34px; }
+.period .label { font-family: var(--display); font-weight: 700; font-size: 22px; text-transform: uppercase; min-width: 10ch; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: 10px; margin-bottom: 16px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; min-width: 0; }
+.tile .k { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+.tile .v { font-family: var(--display); font-weight: 700; font-size: 34px; line-height: 1.05; margin-top: 4px; display: flex; align-items: baseline; gap: 8px; }
+.tile .v small { font-family: var(--body); font-size: 12px; font-weight: 500; color: var(--ink-2); }
+.tile .s { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
+.hist-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+@media (min-width: 1000px) { .hist-grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } }
+.receipts { display: flex; flex-direction: column; gap: 12px; }
+.receipt { background: var(--receipt); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; font-family: var(--mono); font-size: 12px; }
+.receipt header { display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+.receipt header .t b { font-family: var(--body); font-size: 15px; font-weight: 600; display: block; }
+.receipt header .t span { color: var(--ink-2); }
+.receipt ul { list-style: none; margin: 8px 0; padding: 8px 0; border-top: 1.5px dashed var(--line); border-bottom: 1.5px dashed var(--line); display: flex; flex-direction: column; gap: 3px; }
+.receipt li { display: flex; justify-content: space-between; gap: 8px; }
+.receipt li span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.receipt li span:last-child { white-space: nowrap; }
+.receipt .sum { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.receipt .sum b { font-weight: 500; }
+.receipt .acts { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; font-family: var(--body); align-items: center; }
+.receipt .acts button { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; font-size: 12px; }
+.receipt .acts button.danger { color: var(--bad); }
+.tablewrap { overflow-x: auto; }
+table.t { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.t th, table.t td { text-align: right; padding: 7px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+table.t th:first-child, table.t td:first-child { text-align: left; }
+table.t th { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+.hist-empty { background: var(--surface); border: 1px dashed var(--line); border-radius: var(--r); padding: 28px 20px; text-align: center; color: var(--ink-2); }
+.hist-empty b { color: var(--ink); display: block; font-size: 16px; margin-bottom: 4px; }
+
+/* more */
+.more-grid { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1000px) { .more-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.method li { margin-bottom: 8px; color: var(--ink-2); }
+.method li b { color: var(--ink); }
+.steps { margin: 0; padding-left: 20px; color: var(--ink-2); font-size: 14px; }
+.steps li { margin-bottom: 6px; }
+.steps b { color: var(--ink); }
+.src-list { list-style: none; padding: 0; margin: 0 0 14px; display: flex; flex-direction: column; gap: 8px; }
+.src-list li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 8px; align-items: baseline; font-size: 13px; color: var(--ink-2); }
+.src-list li b { color: var(--ink); font-weight: 600; }
+.kind { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; margin-left: 6px; }
+.kind.store { color: var(--good); }
+.kind.approx { color: var(--warn); }
+table.prices td { vertical-align: middle; }
+table.prices tr.chain-row td { font-family: var(--display); font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 0.02em; padding-top: 14px; color: var(--ink); }
+table.prices td .nm { display: block; color: var(--ink); white-space: normal; }
+table.prices td small { display: block; color: var(--ink-2); font-size: 12px; max-width: 36ch; white-space: normal; }
+table.prices td.listed { font-family: var(--mono); }
+table.prices input { width: 6.2rem; border: 1px solid var(--line); border-radius: 6px; padding: 6px 7px; background: var(--surface); font-family: var(--mono); font-size: 13px; text-align: right; }
+table.prices input.set { border-color: var(--m-pro); box-shadow: 0 0 0 1px var(--m-pro) inset; }
+.row-acts { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 12px; font-size: 13px; }
+.banner { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--navh) + 70px); z-index: 20; background: var(--ink); color: var(--surface); border-radius: 12px; padding: 10px 14px; font-size: 13px; display: flex; gap: 10px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.25); max-width: calc(100% - 32px); }
+.banner[hidden] { display: none; }
+.banner button { border: 0; background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 999px; padding: 6px 12px; }
+
+@media (pointer: coarse) {
+  .chips { gap: 8px; }
+  .chip, .add, .btn, .sel, .search, .inp, .logform input, .field input, .field select, table.prices input, .receipt .acts button, .cartbar .btn, .slot-pick select { min-height: 44px; }
+  .period button.nav { width: 44px; height: 44px; }
+  .stepper button { width: 44px; height: 44px; font-size: 18px; }
+  .search, .sel, .inp, .logform input, .field input, .field select, table.prices input, .slot-pick select { font-size: 16px; }
+  .add { padding-inline: 16px; }
+}
+@media (prefers-reduced-motion: no-preference) { .item, .add, .chip, .card { transition: border-color .15s, background-color .15s, transform .15s; } .add:active, .btn:active { transform: scale(.97); } }
+@media (max-width: 520px) { .totals .v { font-size: 22px; } .logform { grid-template-columns: minmax(0, 1fr); } }
+/* phones: menu cards become compact rows with the picture on the left */
+@media (max-width: 559px) {
+  .items { gap: 8px; }
+  .item { grid-template-columns: 72px minmax(0, 1fr); grid-template-rows: auto auto auto; column-gap: 10px; row-gap: 4px; padding: 10px 12px; }
+  .item .pic { grid-row: 1 / span 3; height: auto; align-self: start; padding-top: 2px; }
+  .item .pic svg { height: 58px; }
+  .item > div:not(.pic), .item .foot { grid-column: 2; }
+  .item h3 { font-size: 15px; }
+  .nums .cal { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+<a class="sr-only" href="#main">Skip to content</a>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><h1>Drive-Thru Macros</h1><span>Five Canadian chains, ordered without sauce</span></div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#order" data-tab="order" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 11a8 6 0 0 1 16 0z"/><path d="M3.5 14.5h17"/><path d="M5 18h14a1 1 0 0 0 1-1v-.5H4v.5a1 1 0 0 0 1 1z"/></svg>Order</a>
+      <a href="#deals" data-tab="deals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.4"/></svg>Deals</a>
+      <a href="#ideas" data-tab="ideas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.6 1 2.5h6c0-.9.2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg>Ideas</a>
+      <a href="#history" data-tab="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>History</a>
+      <a href="#more" data-tab="more"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5.5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="18.5" cy="12" r="1.8"/></svg>More</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="main" tabindex="-1">
+  <div class="loading" id="loading">Loading the menu…</div>
+
+  <section class="view" id="view-order" hidden>
+    <div class="filters"><div class="chips scroll" id="f-chain" role="group" aria-label="Restaurant"></div></div>
+    <div class="filters"><div class="chips scroll" id="f-cat" role="group" aria-label="Type"></div></div>
+    <div class="filters">
+      <div class="ctl"><span class="ctl-label">Order</span><div class="chips" id="f-mode" role="group" aria-label="Order style">
+        <button type="button" class="chip" data-v="ns" aria-pressed="true">No sauce</button>
+        <button type="button" class="chip" data-v="full" aria-pressed="false">As served</button>
+      </div></div>
+      <div class="ctl"><label class="ctl-label" for="f-sort">Sort</label>
+        <select class="sel" id="f-sort">
+          <option value="p100">Protein per 100 cal</option>
+          <option value="pd">Protein per dollar</option>
+          <option value="p">Most protein</option>
+          <option value="cal">Fewest calories</option>
+          <option value="price">Cheapest</option>
+          <option value="name">Name</option>
+        </select>
+      </div>
+      <input class="search" id="f-q" type="search" placeholder="Search the menu" aria-label="Search the menu" autocomplete="off">
+    </div>
+    <p class="takeaway" id="takeaway"></p>
+    <div class="order-grid">
+      <div>
+        <h2 class="sr-only">Menu</h2>
+        <div class="items" id="items"></div>
+        <button type="button" class="btn ghost more-btn" id="more-items" hidden>Show more</button>
+        <div class="panel section-gap" id="compare">
+          <h2 id="cmp-title">Calories vs protein</h2>
+          <p class="sub" id="cmp-sub"></p>
+          <div class="filters" style="margin-bottom:8px"><div class="ctl"><span class="ctl-label">Compare protein to</span><div class="chips" id="f-x" role="group" aria-label="Compare protein to">
+            <button type="button" class="chip" data-v="cal" aria-pressed="true">Calories</button>
+            <button type="button" class="chip" data-v="price" aria-pressed="false">Price</button>
+          </div></div></div>
+          <div class="legend" id="legend"></div>
+          <div class="chart" id="scatter"></div>
+        </div>
+      </div>
+      <aside class="ticket" id="ticket" aria-label="Your order">
+        <h2>Your order <small id="t-date"></small></h2>
+        <div id="lines"></div>
+        <hr class="rule">
+        <div class="sauces" id="sauces"></div>
+        <hr class="rule">
+        <div class="totals">
+          <div><div class="k">Cal</div><div class="v" id="tt-cal">0</div></div>
+          <div><div class="k">Protein</div><div class="v" id="tt-p">0</div></div>
+          <div><div class="k">Fat</div><div class="v" id="tt-f">0</div></div>
+          <div><div class="k">Carbs</div><div class="v" id="tt-c">0</div></div>
+        </div>
+        <div class="split" id="split"><i style="background:var(--m-pro)"></i><i style="background:var(--m-fat)"></i><i style="background:var(--m-carb)"></i></div>
+        <div class="split-legend" id="split-legend"></div>
+        <hr class="rule">
+        <div class="money" id="money"></div>
+        <hr class="rule">
+        <div class="scorebox"><div class="grade" id="grade">–</div><div class="scoretext" id="scoretext">Add items to see the cheat-meal score.</div></div>
+        <div class="curve" id="curve"></div>
+        <div class="drag" id="drag"></div>
+        <hr class="rule">
+        <div class="day" id="day"></div>
+        <hr class="rule">
+        <form class="logform" id="logform">
+          <label>Date eaten<input type="date" id="log-date" required></label>
+          <label>Meal name<input type="text" id="log-name" maxlength="60" placeholder="Cheat meal"></label>
+          <div class="go">
+            <button type="submit" class="btn accent" id="log-btn" disabled>Log this meal</button>
+            <button type="button" class="btn ghost" id="clear-btn" disabled>Clear order</button>
+          </div>
+          <div class="flash" id="flash" aria-live="polite" style="grid-column: 1 / -1"></div>
+        </form>
+      </aside>
+    </div>
+  </section>
+
+  <section class="view" id="view-deals" hidden>
+    <div class="info" id="deals-info"></div>
+    <div class="filters"><div class="chips scroll" id="d-chain" role="group" aria-label="Restaurant"></div></div>
+    <div class="cards" id="deal-cards"></div>
+    <div class="panel section-gap">
+      <h2>Your app deals</h2>
+      <p class="sub">McDonald's, A&amp;W and most Wendy's and Burger King coupons are in each chain's app and are personal to your account. Add the ones you see and they show up here and in Ideas.</p>
+      <div class="cards" id="my-deals"></div>
+      <details class="section-gap" id="add-deal">
+        <summary class="btn ghost">Add a deal</summary>
+        <form id="deal-form" class="section-gap">
+          <div class="form-grid">
+            <label class="field">Restaurant<select id="df-chain"></select></label>
+            <label class="field">What the deal is called<input id="df-title" maxlength="60" placeholder="2 for $7" required></label>
+            <label class="field">Deal price ($, before tax)<input id="df-price" type="number" inputmode="decimal" min="0" max="200" step="0.01" required></label>
+            <label class="field">Ends on (optional)<input id="df-expires" type="date"></label>
+          </div>
+          <div class="form-grid section-gap">
+            <label class="field">Item<select id="df-item"></select></label>
+            <label class="field">How many<input id="df-qty" type="number" inputmode="numeric" min="1" max="10" value="1"></label>
+          </div>
+          <div class="row-acts"><button type="button" class="btn ghost" id="df-add-item">Add item to deal</button></div>
+          <ul class="picked" id="df-picked"></ul>
+          <div class="row-acts"><button type="submit" class="btn accent">Save deal</button><span class="flash" id="df-flash" aria-live="polite"></span></div>
+        </form>
+      </details>
+    </div>
+  </section>
+
+  <section class="view" id="view-ideas" hidden>
+    <div class="ideas-controls panel">
+      <div>
+        <div class="ctl-label">Calorie budget</div>
+        <div class="budget-row" id="i-budget"></div>
+      </div>
+      <div class="ctl"><span class="ctl-label">Stops</span><div class="chips" id="i-stops" role="group" aria-label="How many restaurants">
+        <button type="button" class="chip" data-v="1" aria-pressed="true">One restaurant</button>
+        <button type="button" class="chip" data-v="2" aria-pressed="false">Two restaurants</button>
+        <button type="button" class="chip" data-v="any" aria-pressed="false">Either</button>
+      </div></div>
+      <div class="ctl"><span class="ctl-label">Rank by</span><div class="chips" id="i-priority" role="group" aria-label="Rank by">
+        <button type="button" class="chip" data-v="balanced" aria-pressed="true">Combo score</button>
+        <button type="button" class="chip" data-v="lean">Leanest</button>
+        <button type="button" class="chip" data-v="value">Best value</button>
+      </div></div>
+      <div class="chips scroll" id="i-chain" role="group" aria-label="Restaurants"></div>
+      <div class="ctl" style="gap:16px">
+        <label class="check"><input type="checkbox" id="i-deals" checked> Include deals</label>
+        <label class="check"><input type="checkbox" id="i-breakfast"> Include breakfast</label>
+        <label class="check"><input type="checkbox" id="i-ns" checked> Order without sauce</label>
+        <label class="check"><input type="checkbox" id="i-fries"> With fries</label>
+      </div>
+    </div>
+    <p class="takeaway" id="ideas-take"></p>
+    <div class="cards" id="idea-cards"></div>
+  </section>
+
+  <section class="view" id="view-history" hidden>
+    <div class="hist-head">
+      <div class="chips" id="h-span" role="group" aria-label="Period">
+        <button type="button" class="chip" data-v="week" aria-pressed="true">Week</button>
+        <button type="button" class="chip" data-v="month" aria-pressed="false">Month</button>
+        <button type="button" class="chip" data-v="all" aria-pressed="false">All time</button>
+      </div>
+      <div class="period">
+        <button type="button" class="nav" id="h-prev" aria-label="Previous period">‹</button>
+        <div class="label" id="h-label"></div>
+        <button type="button" class="nav" id="h-next" aria-label="Next period">›</button>
+      </div>
+    </div>
+    <div id="h-body"></div>
+  </section>
+
+  <section class="view" id="view-more" hidden>
+    <div class="more-grid">
+      <div class="panel">
+        <h2>Daily targets</h2>
+        <p class="sub">Used for the "Against your day" bars and the Ideas budget.</p>
+        <div class="form-grid">
+          <label class="field">Calories<input id="tg-cal" type="number" inputmode="numeric" min="800" max="6000" step="10"></label>
+          <label class="field">Protein (g)<input id="tg-pro" type="number" inputmode="numeric" min="20" max="400" step="5"></label>
+        </div>
+        <div class="row-acts"><button type="button" class="btn" id="tg-save">Save targets</button><span class="flash" id="tg-flash" aria-live="polite"></span></div>
+      </div>
+      <div class="panel">
+        <h2>Backup &amp; restore</h2>
+        <p class="sub" id="store-note">Your log, prices and deals are saved on this device only. Save a backup now and then so nothing is lost if Safari's data is cleared.</p>
+        <div class="row-acts">
+          <button type="button" class="btn" id="bk-export">Save a backup file</button>
+          <label class="btn ghost" for="bk-import">Restore from a file</label>
+          <input type="file" id="bk-import" accept="application/json,.json" class="sr-only">
+        </div>
+        <p class="flash" id="bk-flash" aria-live="polite"></p>
+      </div>
+      <div class="panel" id="install-panel">
+        <h2>Put it on your home screen</h2>
+        <ol class="steps">
+          <li>Open this page in <b>Safari</b> on your iPhone.</li>
+          <li>Tap the <b>Share</b> button, then <b>Add to Home Screen</b>.</li>
+          <li>Open <b>Macros</b> from your home screen. It works offline, and your log stays on the phone.</li>
+        </ol>
+        <p class="sub section-gap" id="data-dates"></p>
+      </div>
+      <div class="panel">
+        <h2>Your home sauces</h2>
+        <p class="sub">Per tablespoon, from each bottle's Canadian label.</p>
+        <div class="tablewrap"><table class="t" id="sauce-table"><thead><tr><th>Sauce</th><th>Cal</th><th>Protein</th><th>Fat</th><th>Carbs</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+    <div class="panel section-gap" id="prices-panel">
+      <h2>Prices</h2>
+      <p class="sub">Before tax. Prices vary by store, so type what yours charges and it replaces the listed price everywhere. Leave a box empty to use the listed price.</p>
+      <ul class="src-list" id="price-src"></ul>
+      <div class="filters"><div class="chips scroll" id="p-chain" role="group" aria-label="Restaurant"></div><input class="search" id="p-q" type="search" placeholder="Find an item" aria-label="Find an item" autocomplete="off"></div>
+      <div class="tablewrap"><table class="t prices" id="price-table"><thead><tr><th>Item</th><th>Listed</th><th>Your price</th></tr></thead><tbody></tbody></table></div>
+      <div class="row-acts"><button type="button" class="btn ghost" id="price-reset">Clear my prices</button><span class="flash" id="price-status" aria-live="polite"></span></div>
+    </div>
+    <div class="panel section-gap method">
+      <h2>How the numbers were built</h2>
+      <ul>
+        <li><b>Nutrition</b> comes from each chain's own Canadian data, pulled October 23, 2026: McDonald's nutrition calculator, Wendy's and Burger King ordering data, Harvey's nutrition page and A&amp;W's menu data.</li>
+        <li><b>No sauce.</b> McDonald's, Wendy's and Burger King publish ingredient-level numbers, so their no-sauce versions take the sauces off using the chain's own figures. A&amp;W doesn't, so its no-sauce numbers are estimates (marked). Harvey's burgers are listed as bun and patty with toppings your choice.</li>
+        <li><b>Prices</b> are before tax. Wendy's, Harvey's and Burger King come from their online ordering at Niagara Falls stores. McDonald's and A&amp;W only show prices in their apps, so theirs are approximate, from third-party menu guides.</li>
+        <li><b>Cheat-meal score</b> ranks your order's protein per 100 calories against every one-item order of a burger, chicken or fish main at these chains (no sauce, alone or with fries). Meals you logged keep the score they had when you logged them.</li>
+        <li><b>Combo score</b> (Ideas) runs 0–100: 40% leanness (protein per 100 cal, where 3 g scores 0 and the 10 g golden ratio scores 100), 40% value (protein per dollar, where 2 g scores 0 and 7 g scores 100) and 20% protein (how close the meal gets to a third of your daily protein target). A meal from two restaurants loses 6 points for the extra stop, so it only ranks higher when it's clearly better.</li>
+        <li><b>Deals</b> are refreshed weekly from the chains' own Ontario ordering sites. App coupons are personal, so add yours under Deals.</li>
+      </ul>
+    </div>
+    <div class="panel section-gap">
+      <h2>Start over</h2>
+      <p class="sub">Deletes your log, prices, deals and order on this device. Save a backup first if you might want them back.</p>
+      <div class="row-acts" id="reset-row"><button type="button" class="btn danger" id="reset-btn">Delete everything on this device</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="cartbar" id="cartbar" hidden>
+  <span id="cartbar-sum" role="status" aria-live="polite"></span>
+  <button type="button" class="btn" id="cartbar-go">View order</button>
+</div>
+<div class="banner" id="update-banner" hidden><span>A newer version is ready.</span><button type="button" id="update-btn">Refresh</button></div>
+
+<script src="js/d3.min.js"></script>
+<script src="js/pics.js"></script>
+<script src="js/store.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

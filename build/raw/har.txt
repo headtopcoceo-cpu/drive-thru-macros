@@ -1,0 +1,75 @@
+# name|cat|price|cal|p|f|c|note   (Harvey's nutrition page; prices from harveys.ca pickup, Niagara Falls - Lundy's Lane, Oct 23 2026)
+Original Burger|Burgers|7.49|380|17|20|33|
+Original Burger with Cheese|Burgers|8.29|440|20|24|35|
+Original Burger with Cheese and Bacon|Burgers|9.59|490|25|28|35|
+Double Original|Burgers|8.99|590|28|37|37|
+Angus Burger|Burgers|8.39|410|18|23|32|
+Angus Burger with Cheese|Burgers|9.19|470|21|27|34|
+Angus Burger with Cheese and Bacon|Burgers|10.49|520|25|31|35|
+Double Angus|Burgers|10.79|650|30|43|35|
+Big Harv (Angus)|Burgers|11.99|750|36|50|39|
+Big Harv (Original)|Burgers|10.19|690|35|44|39|
+Junior Burger|Burgers|2.99|250|10|11|27|
+Junior Burger with Cheese|Burgers|3.39|300|13|15|29|
+Junior Burger with Cheese and Bacon|Burgers|4.29|340|16|17|29|
+Double Junior|Burgers|3.99|360|15|20|29|
+Triple Junior|Burgers||470|20|29|31|Not sold on its own. Double Junior plus one Junior patty.
+Veggie Burger|Burgers|7.49|330|20|14|32|
+Veggie Burger with Cheese|Burgers||390|23|18|34|
+Hot Dog|Other|4.99|340|17|14|37|
+Hot Dog with Cheese|Other||400|20|18|39|
+Hot Dog with Cheese and Bacon|Other||450|24|22|39|
+Grilled Chicken Sandwich|Chicken|8.19|270|28|5|29|
+Crispy Chicken Sandwich|Chicken|8.19|560|25|29|51|
+Crispy Chicken Sandwich with Cheese|Chicken||620|28|33|53|
+Crispy Chicken Sandwich with Cheese and Bacon|Chicken||670|31|37|53|
+Buffalo Chicken Sandwich|Chicken|8.49|660|25|33|66|Tossed in buffalo sauce.
+Junior Crispy Chicken|Chicken|3.39|290|13|12|33|
+Junior Buffalo Chicken|Chicken|3.69|310|13|13|36|
+Chicken Strips (2)|Chicken||200|12|11|15|
+Chicken Strips (4)|Chicken|8.99|400|23|22|29|
+Chicken Strips (5)|Chicken||500|29|28|36|Scaled from the 4-piece; Harvey's sells strips in 2s and 4s.
+Chicken Nuggets (5)|Chicken|4.99|330|15|23|16|
+Chicken Nuggets (8)|Chicken|7.99|530|24|37|25|
+Chicken Nuggets (12)|Chicken|11.99|790|36|55|38|
+Buffalo Chicken Nuggets (5)|Chicken|5.29|380|15|25|24|
+Buffalo Chicken Nuggets (8)|Chicken|8.29|620|24|40|41|
+Buffalo Chicken Nuggets (12)|Chicken|12.29|940|37|61|62|
+Grilled Chicken Wrap|Chicken|8.49|420|30|13|49|
+Crispy Chicken Wrap|Chicken|8.49|700|27|36|70|
+Buffalo Chicken Wrap|Chicken|8.79|800|27|40|85|
+Grilled Chicken Salad (no dressing)|Salads|10.19|180|26|3|16|
+Entrée Salad with Crispy Chicken (no dressing)|Salads|10.19|460|23|26|36|
+Entrée Salad with Buffalo Chicken (no dressing)|Salads|10.49|560|23|30|52|
+Garden Side Salad (no dressing)|Salads|4.49|35|2|0.3|7|
+Kids fries|Sides||320|4|13|48|Kids fries come only in a kids meal.
+Regular fries|Sides|3.99|430|6|18|65|
+Large fries|Sides|4.79|550|7|23|84|
+Onion rings · Regular|Sides|3.99|300|4|18|33|
+Onion rings · Large|Sides|4.79|600|7|36|65|
+Frings|Sides|4.49|620|8|31|81|
+Deep Fried Pickles|Sides|4.19|250|3|14|29|
+Classic Poutine · Regular|Sides|6.29|700|22|36|73|
+Classic Poutine · Large|Sides|8.29|1180|28|56|145|
+Bacon Double Cheese Poutine · Regular|Sides|8.19|850|33|47|74|
+Bacon Double Cheese Poutine · Large|Sides|11.19|1400|45|71|152|
+Buffalo Chicken Poutine · Regular|Sides|8.19|850|28|44|88|
+Buffalo Chicken Poutine · Large|Sides|11.19|1500|41|71|181|
+Chicken Bacon Ranch Poutine · Regular|Sides|9.39|910|32|52|81|
+Chicken Bacon Ranch Poutine · Large|Sides|12.39|1710|54|92|173|
+Pickle Pickle Poutine · Regular|Sides|8.19|1000|21|75|64|
+Pickle Pickle Poutine · Large|Sides|11.19|1750|25|134|115|
+Apple Pie|Desserts|1.89|220|2|12|27|
+Blueberry Pie|Desserts||240|2|13|31|
+Mini Donuts (4)|Desserts|2.19|360|4|17|46|
+Mini Donuts (8)|Desserts|3.79|720|7|34|98|
+English Muffin with Bacon, Egg & Cheese|Breakfast||370|18|20|27|Breakfast at select locations.
+English Muffin with Sausage, Egg & Cheese|Breakfast||470|20|30|27|Breakfast at select locations.
+English Muffin with Chicken, Egg & Cheese|Breakfast||500|22|31|34|Breakfast at select locations.
+English Muffin with Egg & Cheese|Breakfast||320|14|17|26|Breakfast at select locations.
+Breakfast Wrap with Bacon, Egg, Cheese & Tater Tots|Breakfast||590|20|36|45|Breakfast at select locations.
+Breakfast Wrap with Sausage, Egg, Cheese & Tater Tots|Breakfast||680|22|45|46|Breakfast at select locations.
+Breakfast Wrap with Chicken, Egg, Cheese & Tater Tots|Breakfast||720|24|46|53|Breakfast at select locations.
+Homestyle Breakfast with Bacon|Breakfast||740|28|48|49|Breakfast at select locations.
+Homestyle Breakfast with Sausage|Breakfast||780|25|54|49|Breakfast at select locations.
+Homestyle Breakfast with Chicken|Breakfast||820|27|55|56|Breakfast at select locations.

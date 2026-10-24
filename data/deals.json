@@ -1,0 +1,211 @@
+{
+  "updated": "2026-10-23",
+  "region": "Niagara Falls, Ontario",
+  "note": "Deals listed publicly on each chain's own ordering site for Niagara Falls stores. McDonald's, A&W and most Wendy's and Burger King coupons live inside each chain's app and are personal to your account, so add those yourself.",
+  "deals": [
+    {
+      "id": "bk-2for12",
+      "chain": "Burger King",
+      "title": "2 Sandwiches Mix n' Match",
+      "price": 12.0,
+      "kind": "everyday",
+      "desc": "Any two of: Quarter Pound King, Original Chicken, Spicy Original Chicken, Big Fish or Spicy Big Fish.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "bk-quarter-pound-king",
+            "bk-original-chicken-sandwich",
+            "bk-spicy-original-chicken-sandwich",
+            "bk-big-fish",
+            "bk-spicy-big-fish"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "bk-quarter-pound-king",
+            "bk-original-chicken-sandwich",
+            "bk-spicy-original-chicken-sandwich",
+            "bk-big-fish",
+            "bk-spicy-big-fish"
+          ]
+        }
+      ],
+      "how": "On burgerking.ca, in the app or at the counter.",
+      "source": "burgerking.ca Everyday Deals, 6235 Lundy's Lane",
+      "url": "https://www.burgerking.ca/menu/section/0397b87c-9f0a-4ef4-bdc9-9d86467aed72",
+      "verified": "2026-10-23",
+      "expires": null
+    },
+    {
+      "id": "bk-jr-combo",
+      "chain": "Burger King",
+      "title": "Jr. Small Combo",
+      "price": 5.49,
+      "kind": "everyday",
+      "desc": "Whopper Jr., Chicken Jr. or Big King Jr. with small fries and a small drink.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "bk-whopper-jr",
+            "bk-chicken-jr-sandwich",
+            "bk-big-king-jr"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "bk-fries-s"
+          ]
+        }
+      ],
+      "extras": "Plus a small drink. Pick a diet pop or water to keep it zero.",
+      "how": "On burgerking.ca, in the app or at the counter.",
+      "source": "burgerking.ca Everyday Deals, 6235 Lundy's Lane",
+      "url": "https://www.burgerking.ca/menu/section/0397b87c-9f0a-4ef4-bdc9-9d86467aed72",
+      "verified": "2026-10-23",
+      "expires": null
+    },
+    {
+      "id": "bk-2-turnovers",
+      "chain": "Burger King",
+      "title": "2 Apple Turnovers",
+      "price": 2.22,
+      "kind": "everyday",
+      "desc": "Two apple turnovers.",
+      "slots": [
+        {
+          "qty": 2,
+          "choices": [
+            "bk-apple-turnover"
+          ]
+        }
+      ],
+      "how": "On burgerking.ca, in the app or at the counter.",
+      "source": "burgerking.ca Everyday Deals, 6235 Lundy's Lane",
+      "url": "https://www.burgerking.ca/menu/section/0397b87c-9f0a-4ef4-bdc9-9d86467aed72",
+      "verified": "2026-10-23",
+      "expires": null
+    },
+    {
+      "id": "wen-meal-deal",
+      "chain": "Wendy's",
+      "title": "$8.99 Meal Deal",
+      "price": 8.99,
+      "kind": "everyday",
+      "desc": "Dave's Single with small fries and a drink.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "wen-dave1"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "wen-fries-s"
+          ]
+        }
+      ],
+      "extras": "Plus a drink. Diet Coke, Coke Zero and water are zero calories.",
+      "how": "On order.wendys.com, in the app or at the counter.",
+      "source": "order.wendys.com Meal Deal, 6948 McLeod Road",
+      "url": "https://order.wendys.com/ca/en/menu/143",
+      "verified": "2026-10-23",
+      "expires": null
+    },
+    {
+      "id": "wen-wrap-duo",
+      "chain": "Wendy's",
+      "title": "Chicken Wrap Duo",
+      "price": 7.49,
+      "kind": "everyday",
+      "desc": "Two of the same chicken wrap: Grilled, Classic or Spicy.",
+      "slots": [
+        {
+          "qty": 2,
+          "choices": [
+            "wen-gcwrap",
+            "wen-classic-chicken-wrap",
+            "wen-spicy-chicken-wrap"
+          ]
+        }
+      ],
+      "how": "On order.wendys.com, in the app or at the counter.",
+      "source": "order.wendys.com, 6948 McLeod Road",
+      "url": "https://order.wendys.com/ca/en/menu/101",
+      "verified": "2026-10-23",
+      "expires": null
+    },
+    {
+      "id": "wen-welcome",
+      "chain": "Wendy's",
+      "title": "Free 6-piece nuggets",
+      "price": 0,
+      "kind": "app",
+      "desc": "Welcome offer: free 6-piece crispy nuggets with your first purchase in the Wendy's app or online.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "wen-nug6"
+          ]
+        }
+      ],
+      "extras": "Needs a purchase and a new Wendy's account.",
+      "how": "Create a Wendy's account, then redeem it under Offers.",
+      "source": "order.wendys.com",
+      "url": "https://order.wendys.com/ca/en/menu",
+      "verified": "2026-10-23",
+      "expires": null,
+      "once": true
+    },
+    {
+      "id": "aw-2-wraps",
+      "chain": "A&W",
+      "title": "2 Chicken Wraps",
+      "price": 6.49,
+      "kind": "everyday",
+      "approx": true,
+      "desc": "Two Spicy Chipotle or Bacon Chicken Wraps.",
+      "slots": [
+        {
+          "qty": 2,
+          "choices": [
+            "aw-chipwrap",
+            "aw-bacon-chicken-wrap"
+          ]
+        }
+      ],
+      "how": "In the A&W app or at the counter.",
+      "source": "aandwmenu.ca and froqel.com (A&W's own prices are app-only)",
+      "url": "https://aandwmenu.ca/",
+      "verified": "2026-10-23",
+      "expires": null
+    },
+    {
+      "id": "har-2-pies",
+      "chain": "Harvey's",
+      "title": "2 Pie Combo",
+      "price": 2.99,
+      "kind": "everyday",
+      "desc": "Two apple pies.",
+      "slots": [
+        {
+          "qty": 2,
+          "choices": [
+            "har-apple-pie"
+          ]
+        }
+      ],
+      "how": "On harveys.ca, in the app or at the counter.",
+      "source": "harveys.ca pickup menu, Lundy's Lane",
+      "url": "https://www.harveys.ca/en/menu/pickup.html",
+      "verified": "2026-10-23",
+      "expires": null
+    }
+  ]
+}
