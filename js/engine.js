@@ -149,7 +149,7 @@ const Engine = (() => {
       }
     }
     if (includeDeals) for (const d of allDeals()) {
-      if (!okChain(d.chain) || d.once || (d.expires && d.expires < todayStr())) continue; // one-time offers (welcome deals) aren't repeat meals
+      if (!okChain(d.chain) || d.once || d.unconfirmed || (d.expires && d.expires < todayStr())) continue; // one-time offers (welcome deals) aren't repeat meals; coupons not yet seen locally aren't suggested
       const combos = [[]];
       for (const s of d.slots) { const next = []; for (const pre of combos) for (let ci = 0; ci < s.choices.length; ci++) next.push([...pre, ci]); combos.length = 0; combos.push(...next.slice(0, 60)); }
       const seen = new Set();

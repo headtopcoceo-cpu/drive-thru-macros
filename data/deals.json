@@ -1,7 +1,7 @@
 {
-  "updated": "2026-10-23",
+  "updated": "2026-10-24",
   "region": "Niagara Falls, Ontario",
-  "note": "Deals listed publicly on each chain's own ordering site for Niagara Falls stores. McDonald's, A&W and most Wendy's and Burger King coupons live inside each chain's app and are personal to your account, so add those yourself.",
+  "note": "Deals listed publicly on each chain's own ordering site for Niagara Falls stores, plus app coupons and paper mailer coupons that shoppers have posted. McDonald's, A&W and most Wendy's and Burger King app coupons are personal to your account, so add those yourself.",
   "deals": [
     {
       "id": "bk-2for12",
@@ -187,6 +187,404 @@
       "expires": null
     },
     {
+      "id": "aw-m-mama",
+      "chain": "A&W",
+      "title": "Mama Burger",
+      "price": 4.49,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-mama"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true
+    },
+    {
+      "id": "aw-m-2mama",
+      "chain": "A&W",
+      "title": "2 Mama Burgers",
+      "price": 8.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 2,
+          "choices": [
+            "aw-mama"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true
+    },
+    {
+      "id": "aw-m-poutine",
+      "chain": "A&W",
+      "title": "Poutine",
+      "price": 5.49,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-poutine"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true
+    },
+    {
+      "id": "aw-m-teen-combo",
+      "chain": "A&W",
+      "title": "Teen or Mozza Burger Combo",
+      "price": 9.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-teen-burger",
+            "aw-mozza-burger"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-fries-r"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true,
+      "extras": "Includes a regular drink."
+    },
+    {
+      "id": "aw-m-2teen",
+      "chain": "A&W",
+      "title": "2 Teen or Mozza Burgers",
+      "price": 13.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-teen-burger",
+            "aw-mozza-burger"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-teen-burger",
+            "aw-mozza-burger"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true
+    },
+    {
+      "id": "aw-m-2teen-combo",
+      "chain": "A&W",
+      "title": "2 Teen or Mozza Burger Combos",
+      "price": 19.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-teen-burger",
+            "aw-mozza-burger"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-teen-burger",
+            "aw-mozza-burger"
+          ]
+        },
+        {
+          "qty": 2,
+          "choices": [
+            "aw-fries-r"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true,
+      "extras": "Includes 2 regular drinks."
+    },
+    {
+      "id": "aw-m-uncle-combo",
+      "chain": "A&W",
+      "title": "Cheddar Bacon Uncle Burger Combo",
+      "price": 13.49,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-cheddar-bacon-uncle-burger"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-fries-r"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true,
+      "extras": "Includes a regular drink."
+    },
+    {
+      "id": "aw-m-chubby-combo",
+      "chain": "A&W",
+      "title": "Chubby Chicken Burger Combo",
+      "price": 9.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-chubby-chicken-burger"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-fries-r"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true,
+      "extras": "Includes a regular drink."
+    },
+    {
+      "id": "aw-m-2chicken",
+      "chain": "A&W",
+      "title": "2 Chicken Burgers",
+      "price": 13.49,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-chubby-chicken-burger",
+            "aw-spicy-chipotle-chicken-burger"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-chubby-chicken-burger",
+            "aw-spicy-chipotle-chicken-burger"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true
+    },
+    {
+      "id": "aw-m-2chicken-combo",
+      "chain": "A&W",
+      "title": "2 Chicken Burger Combos",
+      "price": 19.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-chubby-chicken-burger",
+            "aw-habanero"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-chubby-chicken-burger",
+            "aw-habanero"
+          ]
+        },
+        {
+          "qty": 2,
+          "choices": [
+            "aw-fries-r"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true,
+      "extras": "Includes 2 regular drinks."
+    },
+    {
+      "id": "aw-m-egger-combo",
+      "chain": "A&W",
+      "title": "Bacon & Egger Combo",
+      "price": 6.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-bacon-and-egger-english-muffin",
+            "aw-sausage-and-egger-english-muffin"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-hash-brown"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true,
+      "extras": "Includes a small brewed coffee."
+    },
+    {
+      "id": "aw-m-2egger",
+      "chain": "A&W",
+      "title": "2 Bacon & Egger Sandwiches",
+      "price": 8.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-bacon-and-egger-english-muffin",
+            "aw-sausage-and-egger-english-muffin"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-bacon-and-egger-english-muffin",
+            "aw-sausage-and-egger-english-muffin"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true
+    },
+    {
+      "id": "aw-m-2egger-combo",
+      "chain": "A&W",
+      "title": "2 Bacon & Egger Combos",
+      "price": 13.99,
+      "kind": "mailer",
+      "desc": "From A&W's mid-October mailer as posted from Manitoba and northwestern Ontario on Oct 19. Mailers are local, so the one in your Niagara mailbox may have different prices or coupons.",
+      "slots": [
+        {
+          "qty": 1,
+          "choices": [
+            "aw-bacon-and-egger-english-muffin",
+            "aw-sausage-and-egger-english-muffin"
+          ]
+        },
+        {
+          "qty": 1,
+          "choices": [
+            "aw-bacon-and-egger-english-muffin",
+            "aw-sausage-and-egger-english-muffin"
+          ]
+        },
+        {
+          "qty": 2,
+          "choices": [
+            "aw-hash-brown"
+          ]
+        }
+      ],
+      "how": "Hand the paper coupon over at the counter (one per guest per visit; not for app or delivery orders). Valid until early January 2027; go by the date printed on your coupon.",
+      "source": "A&W mailer, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/w-mid-october-2026-early-january-2027-w-mail-coupons-manitoba-probably-others-2829567/",
+      "verified": "2026-10-24",
+      "expires": null,
+      "approx": true,
+      "unconfirmed": true,
+      "extras": "Includes 2 small brewed coffees."
+    },
+    {
       "id": "har-2-pies",
       "chain": "Harvey's",
       "title": "2 Pie Combo",
@@ -206,6 +604,48 @@
       "url": "https://www.harveys.ca/en/menu/pickup.html",
       "verified": "2026-10-23",
       "expires": null
+    },
+    {
+      "id": "har-2-jr-cheese",
+      "chain": "Harvey's",
+      "title": "2 for $5 Jr. Cheeseburgers",
+      "price": 5.0,
+      "kind": "app",
+      "desc": "Two Junior Burgers with Cheese. Part of Harvey's fall app offers.",
+      "slots": [
+        {
+          "qty": 2,
+          "choices": [
+            "har-junior-burger-with-cheese"
+          ]
+        }
+      ],
+      "how": "In the Harvey's app under Offers (Harvey's also emailed it). Doesn't stack with the CAA discount.",
+      "source": "Harvey's offer email, via RedFlagDeals",
+      "url": "https://forums.redflagdeals.com/harveys-2-5-jr-cheeseburger-2827503/",
+      "verified": "2026-10-24",
+      "expires": "2026-11-01"
+    },
+    {
+      "id": "har-2-jr-chicken",
+      "chain": "Harvey's",
+      "title": "2 for $5 Jr. Crispy Chicken",
+      "price": 5.0,
+      "kind": "app",
+      "desc": "Two Junior Crispy Chicken sandwiches.",
+      "slots": [
+        {
+          "qty": 2,
+          "choices": [
+            "har-junior-crispy-chicken"
+          ]
+        }
+      ],
+      "how": "In the Harvey's app under Offers.",
+      "source": "RedFlagDeals (Harvey's app coupons)",
+      "url": "https://forums.redflagdeals.com/harveys-2-jr-chicken-burgs-5-until-november-2-2807954/",
+      "verified": "2026-10-24",
+      "expires": "2026-11-02"
     }
   ]
 }

@@ -308,7 +308,10 @@
     const card = el('article', 'card'); const expired = d.expires && d.expires < today();
     if (expired) card.style.opacity = '.6';
     const head = el('header'); const t = el('div'); const who = el('div', 'who'); const dot = el('i', 'dot'); dot.style.setProperty('--cc', cvar(d.chain)); who.append(dot, d.chain + ' ');
-    who.append(el('span', 'badge ' + (d.kind === 'app' ? 'app' : 'deal'), d.kind === 'app' ? 'App offer' : mine ? 'Your deal' : 'Everyday deal'));
+    const kinds = { app: ['app', 'App offer'], mailer: ['mailer', 'Mailer coupon'], limited: ['deal', 'Limited time'], everyday: ['deal', 'Everyday deal'] };
+    const [bc, bl] = mine ? ['deal', 'Your deal'] : (kinds[d.kind] || kinds.everyday);
+    who.append(el('span', 'badge ' + bc, bl));
+    if (d.unconfirmed) { const ck = el('span', 'badge verify', 'Check your mailer'); ck.title = 'Seen in another region’s mailer. Niagara’s copy may differ, so it stays out of meal ideas.'; who.append(' ', ck); }
     t.append(who, el('h3', '', d.title)); head.append(t);
     const pr = el('div', 'big-price', d.price === 0 ? 'Free' : fmt$(d.price)); if (d.approx) pr.append(el('small', '', 'approx.'));
     if (L && L.regular != null && L.regular > d.price) pr.append(el('small', 'save', `save ${fmt$(L.regular - d.price)}`));
