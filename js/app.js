@@ -393,7 +393,7 @@
     key.append(el('b', '', x.price == null ? 'price not listed' : `${x.approx ? '≈' : ''}${fmt$(x.price)}`), ' · ', el('b', '', g == null ? '— per g protein' : `${cents(g)} per g protein`), ' · ', el('b', '', `${fmt1(x.p100)} g protein per 100 cal`));
     body.append(key);
     const b = x.bob;
-    if (x.price != null) body.append(el('div', 't5-why', `price score ${b.value} · protein-per-cal score ${b.lean}`));
+    if (x.price != null) body.append(el('div', 't5-why', `value ${b.value} · protein/cal ${b.lean} · lightness ${b.light}`));
     else { const un = [...new Set(x.unpriced.map((p) => p.name))]; body.append(el('div', 't5-why', `No price yet for ${un.join(', ')}. Add what you pay under More → Prices to score this order.`)); }
     li.append(body);
     const side = el('div', 't5-side'); const sc = el('div', 't5-score', x.price == null ? '–' : String(b.score)); sc.prepend(el('small', '', 'Bob score')); side.append(sc);
@@ -405,7 +405,7 @@
     const bbb = BIG_BACK_BOB.map((o) => E.bobOrder(o, 'ns'));
     S.lastTop5 = { one: r.one, two: r.two, bbb };
     const sub = $('top5-sub'); sub.replaceChildren();
-    sub.append('Burgers, crispy chicken sandwiches, strips and nuggets, ranked only on ', el('b', '', 'protein per 100 cal'), ' and ', el('b', '', 'price per gram of protein'), `, worked out on the whole order and weighted equally. Orders run ${fmtC(r.minCal)} to ${fmtC(r.maxCal)} cal, ordered without sauce, with current deals counted when they’re cheaper. No grilled chicken, lettuce wraps, veggie burgers, chili, sides or salads.`);
+    sub.append('Fast-food meals that hit the craving without blowing the day: ', el('b', '', 'two or more items from one restaurant'), ', or ', el('b', '', 'a chicken item from one place and a burger from another'), `. Ranked on value (price per gram of protein) and health (protein per 100 cal, and lighter orders score higher). Orders run ${fmtC(r.cal.min)} to ${fmtC(r.cal.max)} cal with at least ${r.minP} g protein, ordered without sauce, with current deals counted. No triple-patty burgers, grilled chicken, lettuce wraps, veggie burgers, chili, sides or salads.`);
     for (const k of ['one', 'two']) { const ol = $('t5-' + k); ol.replaceChildren(); r[k].forEach((x, i) => ol.append(bobRow(x, i, k))); if (!r[k].length) ol.append(el('li', 'empty-note', 'Nothing fits right now.')); }
     const take = $('t5-take'); take.replaceChildren();
     const o = r.one[0], t = r.two[0];
@@ -417,11 +417,13 @@
     if ([...r.one, ...r.two].some((x) => x.parts.some((p) => p.ns && p.ns.basis === 'Estimate'))) take.append(' A&W’s no-sauce numbers are estimates.');
     const how = $('t5-how'); how.replaceChildren();
     for (const line of [
-      ['Protein per 100 cal (50%)', ': total protein over total calories for the whole order. 3 g scores 0, 10 g scores 100.'],
-      ['Price per gram of protein (50%)', ': total price over total protein. 50¢ a gram scores 0, 14¢ a gram scores 100 (2 to 7 g of protein per dollar).'],
-      ['Order size', `: anything from ${fmtC(r.minCal)} to ${fmtC(r.maxCal)} cal counts, so a lone small burger isn’t an order and nothing runs past your biggest go-to. When two orders tie, the smaller one is shown.`],
-      ['What counts', ': burgers, chicken sandwiches (not grilled), strips and nuggets, with a burger or sandwich in every order (and at each stop). Items without a listed price, like McNuggets, can’t be ranked until you add a price.'],
-      ['Variety', ': at most two orders per restaurant (one per pair of restaurants), with near-copies skipped.'],
+      ['Value (40%)', ': price per gram of protein for the whole order. 50\u00a2 a gram scores 0, 14\u00a2 a gram scores 100.'],
+      ['Protein per 100 cal (35%)', ': total protein over total calories. 3 g scores 0, 10 g scores 100.'],
+      ['Lightness (25%)', `: ${fmtC(r.cal.full)} cal or less scores 100, sliding to 0 at ${fmtC(r.cal.max)} cal.`],
+      ['One restaurant', ': two or three items, at least two of them different, with a burger or chicken sandwich in the mix.'],
+      ['Two restaurants', ': one chicken item (a sandwich, strips or nuggets with at least 15 g protein) from one place and one beef burger from another.'],
+      ['What counts', `: burgers, chicken sandwiches (not grilled), strips and nuggets; ${fmtC(r.cal.min)}\u2013${fmtC(r.cal.max)} cal and ${r.minP} g protein or more. Triple-patty burgers are out, and items without a listed price, like McNuggets, can\u2019t be ranked until you add a price.`],
+      ['Variety', ': at most two orders per restaurant (one per pair of restaurants), with near-copies skipped. Ties go to the lighter order.'],
     ]) { const li = el('li'); li.append(el('b', '', line[0]), line[1]); how.append(li); }
     // Big Back Bob
     const bl = $('bbb-list'); bl.replaceChildren(); bbb.forEach((x, i) => bl.append(bobRow(x, i, 'bbb')));
@@ -430,7 +432,8 @@
     if (priced.length && o) {
       const gs = priced.map(perG), ps = bbb.map((x) => x.p100);
       const rng = (a, f) => { const lo2 = Math.min(...a), hi2 = Math.max(...a); return lo2 === hi2 ? f(lo2) : `${f(lo2)}–${f(hi2)}`; };
-      bt.append(`These run ${rng(gs, cents)} per gram of protein and ${rng(ps, fmt1)} g protein per 100 cal, against `, el('b', '', `${cents(perG(o))} and ${fmt1(o.p100)}`), ` for the top pick (${o.chain} ${partsSummary(o.parts)}).`);
+      const cs = bbb.map((x) => x.cal);
+      bt.append(`These run ${rng(cs, fmtC)} cal at ${rng(gs, cents)} per gram of protein and ${rng(ps, fmt1)} g protein per 100 cal, against `, el('b', '', `${fmtC(o.cal)} cal at ${cents(perG(o))} and ${fmt1(o.p100)}`), ` for the top pick (${o.chain} ${partsSummary(o.parts)}).`);
     }
   }
 

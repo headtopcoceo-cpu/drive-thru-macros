@@ -215,13 +215,14 @@ const Engine = (() => {
     return out;
   }
 
-  // ---- Bob's Top 5s: the best burger and crispy-chicken orders, ranked only on protein per 100 cal and protein per
-  // dollar (50/50), both worked out on the whole order. Only burgers, chicken sandwiches (no grilled), strips and nuggets
-  // count; no lettuce wraps, veggie patties, wraps, fish, sides or salads. Every order needs a burger or sandwich and at
-  // 500-1,800 calories (a real meal, up to about the biggest go-to order). Daily targets play no part.
-  const BOB_W = { value: 0.5, lean: 0.5 };
-  const BOB_MIN_CAL = 500, BOB_MAX_CAL = 1800; // a cheat meal: from a real meal up to about the biggest go-to order
-  const BOB_NO = /grill|wrap|salad|poutine|bowl|snack box|veggie|plant|impossible|beyond/i;
+  // ---- Bob's Top 5s: satisfying fast-food meals that are good value and still light. Ranked on value (protein per
+  // dollar), protein per 100 cal and keeping calories low. One restaurant: two or more different items. Two
+  // restaurants: a chicken item from one and a beef burger from the other. Only burgers, chicken sandwiches (no
+  // grilled), strips and nuggets; no triple-patty burgers, lettuce wraps, veggie patties, wraps, fish, sides or salads.
+  const BOB_W = { value: 0.40, lean: 0.35, light: 0.25 };
+  const BOB_CAL = { min: 450, full: 600, max: 1000 }; // ranked orders run 450-1,000 cal; 600 or less gets full calorie marks
+  const BOB_MIN_P = 30; // grams of protein for it to count as a proper meal
+  const BOB_NO = /grill|wrap|salad|poutine|bowl|snack box|veggie|plant|impossible|beyond|triple|grandpa/i;
   const BOB_CHICKEN = /sandwich|burger|mcchicken|mccrispy|junior chicken|chicken jr|cruncher|club|buddy|strip|nugget|tender|chicken fries/i;
   const BOB_SIDEKICK = /strip|nugget|tender|chicken fries/i; // fine in an order, but not on their own
   const bobEligible = (it) => (it.cat === 'Burgers' || (it.cat === 'Chicken' && BOB_CHICKEN.test(it.name))) && !BOB_NO.test(it.name);
@@ -230,15 +231,15 @@ const Engine = (() => {
   const bobParts = (cal, p, price) => ({
     value: price > 0 ? cl01((p / price - 2) / 5) : 0, // protein per dollar: 2 g scores 0, 7 g scores 100
     lean: cal > 0 ? cl01((p * 100 / cal - 3) / 7) : 0, // protein per 100 cal: 3 g scores 0, 10 g scores 100
+    light: cl01((BOB_CAL.max - cal) / (BOB_CAL.max - BOB_CAL.full)), // 600 cal or less scores 100, 1,000 scores 0
   });
-  const bobRaw = (b) => BOB_W.value * b.value + BOB_W.lean * b.lean;
+  const bobRaw = (b) => BOB_W.value * b.value + BOB_W.lean * b.lean + BOB_W.light * b.light;
   function bobScore(t) {
     const b = bobParts(t.cal, t.p, t.price);
-    return { score: Math.round(100 * bobRaw(b)), value: Math.round(b.value * 100), lean: Math.round(b.lean * 100), p100: (t.p / t.cal) * 100, perG: t.price > 0 && t.p > 0 ? t.price / t.p : null };
+    return { score: Math.round(100 * bobRaw(b)), value: Math.round(b.value * 100), lean: Math.round(b.lean * 100), light: Math.round(b.light * 100), p100: (t.p / t.cal) * 100, perG: t.price > 0 && t.p > 0 ? t.price / t.p : null };
   }
   // build a scored order from stops: [{ chain, units: [{ deal?, parts: [items] }] }] or [{ chain, ids: [...] }]
   function bobOrder(stops, mode = 'ns') {
-    if (typeof mode !== 'string') mode = arguments[3] || 'ns'; // older calls passed meal targets first
     const groups = stops.map((s) => {
       const units = s.units || s.ids.map((id) => ({ parts: [byId.get(id)].filter(Boolean) }));
       const parts = units.flatMap((u) => u.parts);
@@ -256,13 +257,15 @@ const Engine = (() => {
   }
   const topMemo = new Map();
   function topFives(opts) {
-    const { mode = 'ns', n = 5, minCal = BOB_MIN_CAL, maxCal = BOB_MAX_CAL } = opts || {};
-    const memoKey = [mode, n, minCal, maxCal, items.length, JSON.stringify(overrides), allDeals().map((d) => d.id + d.price + (d.expires || '')).join()].join('|');
+    const { mode = 'ns', n = 5 } = opts || {};
+    const memoKey = [mode, n, items.length, JSON.stringify(overrides), allDeals().map((d) => d.id + d.price + (d.expires || '')).join()].join('|');
     if (topMemo.has(memoKey)) return topMemo.get(memoKey);
     const today = todayStr();
+    const ok = (cal, p) => cal >= BOB_CAL.min && cal <= BOB_CAL.max && p >= BOB_MIN_P;
+    const sc = (cal, p, price) => bobRaw(bobParts(cal, p, price));
     // units a stop can be built from: single priced items, or a current deal whose food all qualifies
     const unitsBy = new Map(); const addUnit = (chain, u) => { if (!unitsBy.has(chain)) unitsBy.set(chain, []); unitsBy.get(chain).push(u); };
-    const mk = (parts, deal) => { let cal = 0, p = 0; for (const it of parts) { const m = macros(it, mode); cal += m.cal; p += m.p; } return { parts, deal: deal || null, cal, p, price: deal ? deal.price : parts.reduce((a, it) => a + priceOf(it), 0), anchor: parts.some(bobAnchor), k: parts.length }; };
+    const mk = (parts, deal) => { let cal = 0, p = 0; for (const it of parts) { const m = macros(it, mode); cal += m.cal; p += m.p; } return { parts, deal: deal || null, cal, p, price: deal ? deal.price : parts.reduce((a, it) => a + priceOf(it), 0), anchor: parts.some(bobAnchor), ids: parts.map((x) => x.id) }; };
     for (const it of items) if (bobEligible(it) && priceOf(it) != null && macros(it, mode).cal > 0) addUnit(it.chain, mk([it]));
     for (const d of allDeals()) {
       if (d.once || d.unconfirmed || (d.expires && d.expires < today) || !(d.price > 0)) continue;
@@ -275,40 +278,35 @@ const Engine = (() => {
         addUnit(d.chain, mk(parts, d));
       }
     }
-    const sc = (cal, p, price) => bobRaw(bobParts(cal, p, price));
-    // one restaurant: one to three units, up to four items
+    // one restaurant: two or three items, at least two different ones, with a burger or sandwich
     const oneRaw = [];
     for (const [chain, U] of unitsBy) {
       const m = U.length;
+      const push = (us) => {
+        let cal = 0, p = 0, price = 0, anchor = false; const ids = [];
+        for (const u of us) { cal += u.cal; p += u.p; price += u.price; anchor = anchor || u.anchor; ids.push(...u.ids); }
+        if (ids.length < 2 || ids.length > 3 || new Set(ids).size < 2 || !anchor || !ok(cal, p)) return;
+        oneRaw.push([sc(cal, p, price), cal, chain, us]);
+      };
       for (let i = 0; i < m; i++) {
-        const a = U[i];
-        const push = (us, cal, p, price, anchor, k) => { if (cal >= minCal && cal <= maxCal && anchor && k <= 4) oneRaw.push([sc(cal, p, price), cal, chain, us]); };
-        push([a], a.cal, a.p, a.price, a.anchor, a.k);
+        push([U[i]]); // a two-item deal on its own
         for (let j = i; j < m; j++) {
-          const b = U[j]; if (i === j && a.deal) continue; // the same deal twice reads oddly
-          const c2 = a.cal + b.cal, p2 = a.p + b.p, $2 = a.price + b.price, an2 = a.anchor || b.anchor, k2 = a.k + b.k;
-          push([a, b], c2, p2, $2, an2, k2);
-          if (k2 >= 4) continue;
-          for (let k = j; k < m; k++) { if (i === j && j === k) continue; const c = U[k]; if (j === k && c.deal) continue; push([a, b, c], c2 + c.cal, p2 + c.p, $2 + c.price, an2 || c.anchor, k2 + c.k); }
+          if (i === j && U[i].deal) continue;
+          push([U[i], U[j]]);
+          for (let k = j; k < m; k++) { if ((i === j && j === k) || (j === k && U[k].deal)) continue; push([U[i], U[j], U[k]]); }
         }
       }
     }
-    oneRaw.sort((x, y) => y[0] - x[0] || x[1] - y[1]); // ties go to the smaller order
+    oneRaw.sort((x, y) => y[0] - x[0] || x[1] - y[1]); // ties go to the lighter order
     const one = oneRaw.slice(0, 800).map((r) => bobOrder([{ chain: r[2], units: r[3] }], mode));
-    // two restaurants: one or two units at each stop, from each chain's strongest small orders
-    const groupsBy = new Map();
-    for (const [chain, U] of unitsBy) {
-      const G = [];
-      for (let i = 0; i < U.length; i++) { G.push([U[i]]); for (let j = i; j < U.length; j++) if (!(i === j && U[i].deal) && U[i].k + U[j].k <= 3) G.push([U[i], U[j]]); }
-      const ranked = G.map((g) => { const t = g.reduce((a, u) => ({ cal: a.cal + u.cal, p: a.p + u.p, price: a.price + u.price, anchor: a.anchor || u.anchor, k: a.k + u.k }), { cal: 0, p: 0, price: 0, anchor: false, k: 0 }); return [g, t, sc(t.cal, t.p, t.price)]; });
-      groupsBy.set(chain, ranked.filter((r) => r[1].anchor && r[1].cal <= maxCal).sort((a, b) => b[2] - a[2] || a[1].cal - b[1].cal).slice(0, 80));
-    }
-    const twoRaw = []; const chainList = CHAINS.filter((c) => groupsBy.has(c));
-    for (let a = 0; a < chainList.length; a++) for (let b = a + 1; b < chainList.length; b++) {
-      const A = chainList[a], B = chainList[b];
-      for (const [g, tg] of groupsBy.get(A)) for (const [h, th] of groupsBy.get(B)) {
-        const cal = tg.cal + th.cal; if (cal < minCal || cal > maxCal || !tg.anchor || !th.anchor || tg.k + th.k > 4) continue; // a main at each stop
-        twoRaw.push([sc(cal, tg.p + th.p, tg.price + th.price), cal, A, g, B, h]);
+    // two restaurants: a chicken item at one stop and a beef burger at the other
+    const twoRaw = [];
+    const singles = (chain, cat) => (unitsBy.get(chain) || []).filter((u) => !u.deal && u.parts[0].cat === cat);
+    for (const A of CHAINS) for (const B of CHAINS) {
+      if (A === B) continue;
+      for (const c of singles(A, 'Chicken').filter((u) => u.p >= 15)) for (const b of singles(B, 'Burgers')) { // a real chicken portion, not a snack-size nugget box
+        const cal = c.cal + b.cal, p = c.p + b.p; if (!ok(cal, p)) continue;
+        twoRaw.push([sc(cal, p, c.price + b.price), cal, A, [c], B, [b]]);
       }
     }
     twoRaw.sort((x, y) => y[0] - x[0] || x[1] - y[1]);
@@ -320,7 +318,7 @@ const Engine = (() => {
       for (const x of list) {
         const key = capKey(x); if ((perKey[key] || 0) >= cap) continue;
         if (chainCap && x.chains.some((c) => (perChain[c] || 0) >= chainCap)) continue;
-        const set = new Set(x.parts.map(base)); const mac = Math.round(x.p100 * 10) + '|' + Math.round(x.bob.perG * 1000);
+        const set = new Set(x.parts.map(base)); const mac = Math.round(x.cal / 10) + '|' + Math.round(x.p) + '|' + Math.round((x.price || 0) * 10);
         const dup = out.some((o) => o.mac === mac || (capKey(o.x) === key && ([...set].every((q) => o.set.has(q)) || [...o.set].every((q) => set.has(q)))));
         if (dup) continue;
         out.push({ x, set, mac }); perKey[key] = (perKey[key] || 0) + 1; for (const c of x.chains) perChain[c] = (perChain[c] || 0) + 1;
@@ -328,7 +326,8 @@ const Engine = (() => {
       }
       return out.map((o) => o.x);
     };
-    const res = { one: pick(one, (x) => x.chain, 2), two: pick(two, (x) => x.chain, 1, 3), minCal, maxCal };
+    const pairKey = (x) => [...x.chains].sort().join(' + ');
+    const res = { one: pick(one, (x) => x.chain, 2), two: pick(two, pairKey, 1, 3), cal: BOB_CAL, minP: BOB_MIN_P };
     topMemo.set(memoKey, res);
     return res;
   }
@@ -339,6 +338,6 @@ const Engine = (() => {
     CHAINS, CATS, MAIN_CATS, GRADES, load, setOverrides, setCustomDeals, allDeals,
     get items() { return items; }, get sauces() { return sauces; }, get curve() { return curve; },
     byId: (id) => byId.get(id), sauceByKey: (k) => sauceByKey.get(k), dealById: (id) => dealById.get(id),
-    STOP_PENALTY, macros, hasNs, priceOf, isMine, isApprox, isPlainFries, scoreOf, gradeOf, itemKey, dealKey, dealPicks, resolve, totals, ideas, topFives, bobScore, bobOrder, BOB_W, BOB_MIN_CAL, BOB_MAX_CAL, todayStr, r1,
+    STOP_PENALTY, macros, hasNs, priceOf, isMine, isApprox, isPlainFries, scoreOf, gradeOf, itemKey, dealKey, dealPicks, resolve, totals, ideas, topFives, bobScore, bobOrder, BOB_W, BOB_CAL, BOB_MIN_P, todayStr, r1,
   };
 })();
